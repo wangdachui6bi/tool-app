@@ -1,0 +1,242 @@
+.home-header {
+  position: relative;
+  padding: 0 16px;
+  margin-bottom: 8px;
+}
+
+.home-header-bg {
+  position: absolute;
+  top: -60px;
+  left: -20px;
+  right: -20px;
+  height: 200px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  border-radius: 0 0 32px 32px;
+}
+
+.home-header-content {
+  position: relative;
+  padding: 48px 8px 24px;
+  color: #fff;
+}
+
+.home-greeting {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.home-date {
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+.home-section {
+  padding: 0 16px;
+  margin-bottom: 16px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.section-more {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.upcoming-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.upcoming-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.upcoming-card:active {
+  transform: scale(0.98);
+}
+
+.upcoming-card.is-today {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+}
+
+.upcoming-card.is-today .upcoming-meta {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.upcoming-icon {
+  font-size: 32px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(99, 102, 241, 0.08);
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.upcoming-card.is-today .upcoming-icon {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.upcoming-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.upcoming-name {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.upcoming-meta {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.upcoming-countdown {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.countdown-number {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1;
+}
+
+.upcoming-card.is-today .countdown-number {
+  color: #fff;
+}
+
+.countdown-unit {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.upcoming-card.is-today .countdown-unit {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.countdown-today {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--warning);
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.upcoming-card.is-today .countdown-today {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.tool-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 20px 16px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.15s;
+  text-align: center;
+}
+
+.tool-card:active {
+  transform: scale(0.97);
+}
+
+.tool-card-placeholder {
+  border: 2px dashed var(--border);
+  box-shadow: none;
+  opacity: 0.6;
+  cursor: default;
+}
+
+.tool-card-placeholder:active {
+  transform: none;
+}
+
+.tool-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+}
+
+.placeholder-icon {
+  background: var(--bg) !important;
+  color: var(--text-light) !important;
+  font-size: 24px;
+  font-weight: 300;
+}
+
+.tool-name {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.tool-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.lunar-tag {
+  display: inline-block;
+  background: #FFF7ED;
+  color: #C2410C;
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 8px;
+  margin-left: 4px;
+  font-weight: 500;
+}
+
+.upcoming-card.is-today .lunar-tag {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}

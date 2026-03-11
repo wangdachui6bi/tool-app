@@ -1,0 +1,253 @@
+.detail-edit {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  border-radius: 50%;
+}
+
+.detail-edit:active {
+  background: var(--primary-light);
+}
+
+.detail-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 16px 0;
+}
+
+.detail-icon-wrap {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.detail-icon-wrap.is-today {
+  animation: pulse 1.5s infinite;
+}
+
+.detail-icon {
+  font-size: 48px;
+  z-index: 1;
+}
+
+.detail-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.detail-name {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.detail-badges {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.detail-type-badge {
+  display: inline-block;
+  padding: 3px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.detail-type-badge.lunar-badge {
+  background: #FFF7ED;
+  color: #C2410C;
+}
+
+.detail-countdown-card {
+  margin: 0 16px 20px;
+  padding: 24px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  border-radius: var(--radius);
+  text-align: center;
+  color: #fff;
+  box-shadow: 0 4px 20px var(--primary-glow);
+}
+
+.detail-today {
+  padding: 8px 0;
+}
+
+.detail-today-text {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.detail-today-years {
+  font-size: 16px;
+  opacity: 0.85;
+}
+
+.detail-countdown-main {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.detail-countdown-num {
+  font-size: 56px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.detail-countdown-unit {
+  font-size: 18px;
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+.detail-countdown-sub {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.detail-info-list {
+  margin: 0 16px;
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.detail-info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.detail-info-item:last-child {
+  border-bottom: none;
+}
+
+.detail-info-label {
+  font-size: 14px;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.detail-info-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  text-align: right;
+  margin-left: 16px;
+}
+
+.detail-actions {
+  padding: 24px 16px;
+}
+
+.detail-delete-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  background: #FEF2F2;
+  color: var(--danger);
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.detail-delete-btn:active {
+  background: #FEE2E2;
+}
+
+.confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 20px;
+}
+
+.confirm-dialog {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px;
+  width: 100%;
+  max-width: 320px;
+  animation: scaleIn 0.2s ease;
+}
+
+.confirm-title {
+  font-size: 17px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.confirm-message {
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-align: center;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.confirm-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.confirm-cancel {
+  flex: 1;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.confirm-delete {
+  flex: 1;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  background: var(--danger);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.detail-lunar-sub {
+  display: block;
+  font-size: 12px;
+  color: #C2410C;
+  font-weight: 400;
+  margin-top: 2px;
+}

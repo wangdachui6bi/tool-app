@@ -1,0 +1,222 @@
+.anni-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 48px 20px 12px;
+}
+
+.anni-title {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.anni-add-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px var(--primary-glow);
+}
+
+.anni-add-btn:active {
+  transform: scale(0.92);
+}
+
+.anni-filters {
+  display: flex;
+  gap: 8px;
+  padding: 8px 20px 16px;
+  overflow-x: auto;
+}
+
+.filter-chip {
+  flex-shrink: 0;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  background: var(--card);
+  color: var(--text-secondary);
+  box-shadow: var(--shadow);
+  transition: all 0.2s;
+}
+
+.filter-chip.active {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 2px 8px var(--primary-glow);
+}
+
+.anni-empty {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.empty-icon {
+  font-size: 56px;
+  margin-bottom: 16px;
+}
+
+.empty-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.empty-sub {
+  font-size: 13px;
+  color: var(--text-light);
+}
+
+.anni-list {
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.anni-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.anni-card:active {
+  transform: scale(0.98);
+}
+
+.anni-card.is-today {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+}
+
+.anni-card-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+}
+
+.anni-card-icon {
+  font-size: 28px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(99, 102, 241, 0.08);
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.anni-card.is-today .anni-card-icon {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.anni-card-info {
+  min-width: 0;
+}
+
+.anni-card-name {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.anni-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.anni-card.is-today .anni-card-meta {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.anni-card-type {
+  background: var(--primary-light);
+  color: var(--primary);
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.anni-card.is-today .anni-card-type {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.anni-card-right {
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+.anni-countdown {
+  text-align: center;
+}
+
+.anni-countdown-num {
+  display: block;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1;
+}
+
+.anni-card.is-today .anni-countdown-num {
+  color: #fff;
+}
+
+.anni-countdown-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.anni-card.is-today .anni-countdown-label {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.anni-today-badge {
+  background: var(--warning);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 14px;
+  border-radius: 20px;
+}
+
+.anni-card.is-today .anni-today-badge {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.anni-card-lunar {
+  background: #FFF7ED;
+  color: #C2410C;
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.anni-card.is-today .anni-card-lunar {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
