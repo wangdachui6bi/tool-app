@@ -66,7 +66,7 @@ export default function Profile() {
             <Wrench size={32} color="var(--primary)" />
           </div>
           <h1 className="profile-app-name">工具集</h1>
-          <span className="profile-version">v1.0.2</span>
+          <span className="profile-version">v1.0.3</span>
         </div>
 
         <div className="profile-section fade-in">
