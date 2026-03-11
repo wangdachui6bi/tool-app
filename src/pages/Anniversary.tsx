@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import { getAllEvents } from '../stores/eventStore';
-import { sortByCountdown, formatCountdown, getEventTypeIcon, getEventTypeLabel, getYearLabel } from '../utils/dateHelpers';
+import { sortByCountdown, getEventTypeIcon, getEventTypeLabel, getYearLabel } from '../utils/dateHelpers';
 import type { EventCountdown } from '../utils/dateHelpers';
 import type { EventType } from '../types';
 import './Anniversary.css';

@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "cap:sync": "npm run build && npx cap sync",
-    "cap:open": "npx cap open android"
+    "cap:open": "CAPACITOR_ANDROID_STUDIO_PATH='/Users/niuniu/Desktop/work-app/Android Studio.app' npx cap open android"
   },
   "dependencies": {
     "@capacitor/android": "^8.2.0",
