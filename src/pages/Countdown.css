@@ -1,3 +1,29 @@
+.countdown-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.countdown-import-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  border-radius: 50%;
+  transition: opacity 0.15s;
+}
+
+.countdown-import-btn:active {
+  background: var(--primary-light);
+}
+
+.countdown-import-btn:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
 .countdown-add-btn {
   width: 36px;
   height: 36px;
@@ -10,6 +36,27 @@
 
 .countdown-add-btn:active {
   background: var(--primary-light);
+}
+
+.countdown-toast {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.78);
+  color: #fff;
+  padding: 10px 24px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 300;
+  animation: toastIn 0.25s ease;
+  white-space: nowrap;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
 .countdown-empty {
