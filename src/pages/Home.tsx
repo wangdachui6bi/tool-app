@@ -7,9 +7,21 @@ import {
 } from 'lucide-react';
 import dayjs from 'dayjs';
 import { getAllEvents } from '../stores/eventStore';
+import { getCountdowns } from '../stores/countdownStore';
 import { sortByCountdown, getEventTypeIcon, getYearLabel } from '../utils/dateHelpers';
-import type { EventCountdown } from '../utils/dateHelpers';
 import './Home.css';
+
+interface UpcomingItem {
+  id: string;
+  name: string;
+  icon: string;
+  daysRemaining: number;
+  isToday: boolean;
+  dateLabel: string;
+  lunarLabel?: string;
+  yearLabel?: string;
+  source: 'anniversary' | 'countdown';
+}
 
 const QUICK_TOOLS = [
   { id: 'anniversary', name: '纪念日', icon: CalendarHeart, color: '#6366F1', path: '/anniversary' },
@@ -24,19 +36,56 @@ const QUICK_TOOLS = [
 
 export default function Home() {
   const navigate = useNavigate();
-  const [upcoming, setUpcoming] = useState<EventCountdown[]>([]);
+  const [upcoming, setUpcoming] = useState<UpcomingItem[]>([]);
 
   const loadData = useCallback(async () => {
+    const items: UpcomingItem[] = [];
+
     const events = await getAllEvents();
-    const sorted = sortByCountdown(events);
-    setUpcoming(sorted.slice(0, 3));
+    for (const cd of sortByCountdown(events)) {
+      items.push({
+        id: cd.event.id,
+        name: cd.event.name,
+        icon: cd.event.icon || getEventTypeIcon(cd.event.type),
+        daysRemaining: cd.daysRemaining,
+        isToday: cd.isToday,
+        dateLabel: cd.nextDate.format('M月D日'),
+        lunarLabel: cd.lunarLabel,
+        yearLabel: cd.yearsSince > 0 ? getYearLabel(cd.event, cd.yearsSince) : undefined,
+        source: 'anniversary',
+      });
+    }
+
+    const countdowns = await getCountdowns();
+    const today = dayjs().startOf('day');
+    for (const c of countdowns) {
+      const target = dayjs(c.targetDate).startOf('day');
+      const days = target.diff(today, 'day');
+      if (days < 0) continue;
+      items.push({
+        id: c.id,
+        name: c.name,
+        icon: c.icon || '📅',
+        daysRemaining: days,
+        isToday: days === 0,
+        dateLabel: target.format('M月D日'),
+        source: 'countdown',
+      });
+    }
+
+    items.sort((a, b) => a.daysRemaining - b.daysRemaining);
+    setUpcoming(items.slice(0, 5));
   }, []);
 
   useEffect(() => {
     loadData();
     const handler = () => loadData();
     window.addEventListener('eventUpdated', handler);
-    return () => window.removeEventListener('eventUpdated', handler);
+    window.addEventListener('countdownUpdated', handler);
+    return () => {
+      window.removeEventListener('eventUpdated', handler);
+      window.removeEventListener('countdownUpdated', handler);
+    };
   }, [loadData]);
 
   const today = dayjs();
@@ -70,19 +119,20 @@ export default function Home() {
             <div className="upcoming-list">
               {upcoming.map(item => (
                 <div
-                  key={item.event.id}
+                  key={`${item.source}-${item.id}`}
                   className={`upcoming-card ${item.isToday ? 'is-today' : ''}`}
-                  onClick={() => navigate(`/event/${item.event.id}`)}
+                  onClick={() => navigate(item.source === 'anniversary' ? `/event/${item.id}` : '/tool/countdown')}
                 >
                   <div className="upcoming-icon">
-                    {item.event.icon || getEventTypeIcon(item.event.type)}
+                    {item.icon}
                   </div>
                   <div className="upcoming-info">
-                    <div className="upcoming-name">{item.event.name}</div>
+                    <div className="upcoming-name">{item.name}</div>
                     <div className="upcoming-meta">
-                      {item.nextDate.format('M月D日')}
+                      {item.dateLabel}
                       {item.lunarLabel && <span className="lunar-tag">{item.lunarLabel}</span>}
-                      {item.yearsSince > 0 && ` · ${getYearLabel(item.event, item.yearsSince)}`}
+                      {item.yearLabel && ` · ${item.yearLabel}`}
+                      {item.source === 'countdown' && <span className="source-tag countdown-tag">倒数日</span>}
                     </div>
                   </div>
                   <div className="upcoming-countdown">

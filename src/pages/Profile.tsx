@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Wrench, Database, Trash2, Info, ChevronRight } from 'lucide-react';
+import { Wrench, Database, Trash2, ChevronRight } from 'lucide-react';
 import localforage from 'localforage';
 import { getAllEvents, addEvent, generateId } from '../stores/eventStore';
 import type { MemorialEvent } from '../types';
@@ -58,65 +58,6 @@ export default function Profile() {
     setTimeout(() => setShowSuccess(''), 2000);
   };
 
-  const handleAddDemo = async () => {
-    const demos: Omit<MemorialEvent, 'id' | 'createdAt'>[] = [
-      {
-        name: '爸爸生日(农历)',
-        date: '1965-09-10T00:00:00.000Z',
-        type: 'birthday',
-        calendarMode: 'lunar',
-        lunarMonth: 8,
-        lunarDay: 15,
-        repeatYearly: true,
-        enableReminder: true,
-        reminderDays: 7,
-        icon: '🎂',
-      },
-      {
-        name: '妈妈生日',
-        date: '1968-03-22T00:00:00.000Z',
-        type: 'birthday',
-        calendarMode: 'solar',
-        repeatYearly: true,
-        enableReminder: true,
-        reminderDays: 7,
-        icon: '🎂',
-      },
-      {
-        name: '结婚纪念日',
-        date: '2020-10-01T00:00:00.000Z',
-        type: 'anniversary',
-        calendarMode: 'solar',
-        repeatYearly: true,
-        enableReminder: true,
-        reminderDays: 3,
-        icon: '💍',
-      },
-      {
-        name: '中秋节(农历)',
-        date: '2025-10-06T00:00:00.000Z',
-        type: 'custom',
-        calendarMode: 'lunar',
-        lunarMonth: 8,
-        lunarDay: 15,
-        repeatYearly: true,
-        enableReminder: true,
-        reminderDays: 3,
-        icon: '🌕',
-      },
-    ];
-
-    for (const d of demos) {
-      await addEvent({
-        ...d,
-        id: generateId(),
-        createdAt: new Date().toISOString(),
-      });
-    }
-    window.dispatchEvent(new Event('eventUpdated'));
-    flashSuccess('已添加示例数据');
-  };
-
   return (
     <div className="page">
       <div className="page-content">
@@ -125,7 +66,7 @@ export default function Profile() {
             <Wrench size={32} color="var(--primary)" />
           </div>
           <h1 className="profile-app-name">工具集</h1>
-          <span className="profile-version">v1.0.1</span>
+          <span className="profile-version">v1.0.2</span>
         </div>
 
         <div className="profile-section fade-in">
@@ -149,19 +90,7 @@ export default function Profile() {
           </div>
         </div>
 
-        <div className="profile-section fade-in">
-          <div className="profile-section-title">其他</div>
-          <div className="profile-card">
-            <button className="profile-item" onClick={handleAddDemo}>
-              <Info size={20} className="profile-item-icon" />
-              <span className="profile-item-label">添加示例数据</span>
-              <ChevronRight size={18} className="profile-item-arrow" />
-            </button>
-          </div>
-        </div>
-
         <div className="profile-footer">
-          <p>数据存储在本地设备</p>
           <p>Made with ❤️</p>
         </div>
 
