@@ -1,11 +1,11 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Home, CalendarHeart, Plus, User } from 'lucide-react';
+import { Home, LayoutGrid, CalendarHeart, User } from 'lucide-react';
 import './TabBar.css';
 
 const tabs = [
   { path: '/', icon: Home, label: '首页' },
+  { path: '/toolbox', icon: LayoutGrid, label: '工具箱' },
   { path: '/anniversary', icon: CalendarHeart, label: '纪念日' },
-  { path: '/anniversary/add', icon: Plus, label: '添加', isCenter: true },
   { path: '/profile', icon: User, label: '我的' },
 ];
 
@@ -18,21 +18,6 @@ export default function TabBar() {
       {tabs.map(tab => {
         const isActive = location.pathname === tab.path;
         const Icon = tab.icon;
-
-        if (tab.isCenter) {
-          return (
-            <button
-              key={tab.path}
-              className="tab-bar-center"
-              onClick={() => navigate(tab.path)}
-            >
-              <div className="tab-bar-center-btn">
-                <Icon size={28} color="#fff" />
-              </div>
-            </button>
-          );
-        }
-
         return (
           <button
             key={tab.path}

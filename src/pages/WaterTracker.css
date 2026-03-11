@@ -1,0 +1,194 @@
+.water-tracker-content {
+  padding: 0 16px 24px;
+}
+
+.water-progress-wrap {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 24px auto 16px;
+}
+
+.water-progress-ring {
+  width: 100%;
+  height: 100%;
+}
+
+.water-progress-bg {
+  stroke: #E0F2FE;
+}
+
+.water-progress-fill {
+  stroke: #3B82F6;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.4s ease;
+}
+
+.water-progress-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.water-progress-text {
+  text-align: center;
+  cursor: pointer;
+}
+
+.water-amount {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1E40AF;
+}
+
+.water-sep {
+  font-size: 20px;
+  color: var(--text-light);
+}
+
+.water-goal {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.water-unit {
+  font-size: 14px;
+  color: var(--text-light);
+}
+
+.water-goal-edit {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.water-goal-edit input {
+  width: 80px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1E40AF;
+  text-align: center;
+  background: transparent;
+  border-bottom: 2px solid #3B82F6;
+}
+
+.water-goal-unit {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.water-motivation {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: #3B82F6;
+  margin-bottom: 24px;
+}
+
+.water-quick-btns {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.water-quick-btn {
+  padding: 12px 20px;
+  border-radius: 24px;
+  background: #DBEAFE;
+  color: #1D4ED8;
+  font-size: 15px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.water-quick-btn:active {
+  background: #3B82F6;
+  color: #fff;
+}
+
+.water-custom-add {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.water-custom-add input {
+  flex: 1;
+  padding: 12px 16px;
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  font-size: 15px;
+  color: var(--text);
+}
+
+.water-custom-add input::placeholder {
+  color: var(--text-light);
+}
+
+.water-custom-btn {
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  background: #3B82F6;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.water-custom-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.water-logs-section {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+
+.water-logs-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.water-logs-empty {
+  font-size: 14px;
+  color: var(--text-light);
+  text-align: center;
+  padding: 20px;
+}
+
+.water-logs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.water-log-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+}
+
+.water-log-time {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.water-log-amount {
+  font-size: 14px;
+  font-weight: 600;
+  color: #3B82F6;
+}

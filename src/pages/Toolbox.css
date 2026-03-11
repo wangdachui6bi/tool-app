@@ -1,0 +1,74 @@
+.toolbox-header {
+  padding: 48px 20px 8px;
+}
+
+.toolbox-title {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.toolbox-subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.toolbox-section {
+  padding: 0 16px;
+  margin-bottom: 12px;
+}
+
+.toolbox-section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: 12px 4px 8px;
+}
+
+.toolbox-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.toolbox-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.toolbox-card:active {
+  transform: scale(0.98);
+}
+
+.toolbox-card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.toolbox-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.toolbox-card-name {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.toolbox-card-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+}

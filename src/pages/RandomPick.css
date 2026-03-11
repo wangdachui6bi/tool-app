@@ -1,0 +1,112 @@
+.random-pick-content {
+  padding: 0 16px 24px;
+}
+
+.pick-templates {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.pick-chip {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  background: var(--primary-light);
+  color: var(--primary);
+  transition: all 0.2s;
+}
+
+.pick-chip:active {
+  background: var(--primary);
+  color: #fff;
+}
+
+.pick-textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  box-shadow: var(--shadow);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text);
+  resize: none;
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+}
+
+.pick-textarea::placeholder {
+  color: var(--text-light);
+}
+
+.pick-textarea:disabled {
+  opacity: 0.7;
+}
+
+.pick-start-btn {
+  width: 100%;
+  padding: 16px;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+  font-size: 17px;
+  font-weight: 600;
+  box-shadow: 0 4px 16px var(--primary-glow);
+  transition: all 0.2s;
+}
+
+.pick-start-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pick-start-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.pick-result-card {
+  margin-top: 28px;
+  padding: 28px 24px;
+  background: linear-gradient(135deg, var(--primary-light), #fff);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 20px var(--primary-glow);
+  text-align: center;
+  border: 2px solid var(--primary);
+}
+
+.pick-result-card.scale-in {
+  animation: scaleIn 0.4s ease;
+}
+
+.pick-result-label {
+  font-size: 13px;
+  color: var(--primary);
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pick-result-value {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+
+.pick-again-btn {
+  padding: 10px 24px;
+  border-radius: var(--radius-sm);
+  background: var(--primary);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.pick-again-btn:active {
+  background: var(--primary-dark);
+}

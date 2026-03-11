@@ -1,21 +1,25 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CalendarHeart, ChevronRight, PartyPopper } from 'lucide-react';
+import {
+  CalendarHeart, ChevronRight, PartyPopper,
+  CheckSquare, CalendarClock, ListTodo,
+  Droplets, Timer, Receipt, Dices,
+} from 'lucide-react';
 import dayjs from 'dayjs';
 import { getAllEvents } from '../stores/eventStore';
-import { sortByCountdown, formatCountdown, getEventTypeIcon, getYearLabel } from '../utils/dateHelpers';
+import { sortByCountdown, getEventTypeIcon, getYearLabel } from '../utils/dateHelpers';
 import type { EventCountdown } from '../utils/dateHelpers';
 import './Home.css';
 
-const TOOLS = [
-  {
-    id: 'anniversary',
-    name: '纪念日提醒',
-    desc: '生日、纪念日倒计时',
-    icon: CalendarHeart,
-    color: '#6366F1',
-    path: '/anniversary',
-  },
+const QUICK_TOOLS = [
+  { id: 'anniversary', name: '纪念日', icon: CalendarHeart, color: '#6366F1', path: '/anniversary' },
+  { id: 'habit', name: '习惯打卡', icon: CheckSquare, color: '#10B981', path: '/tool/habit' },
+  { id: 'countdown', name: '倒数日', icon: CalendarClock, color: '#F59E0B', path: '/tool/countdown' },
+  { id: 'todo', name: '待办清单', icon: ListTodo, color: '#8B5CF6', path: '/tool/todo' },
+  { id: 'water', name: '喝水记录', icon: Droplets, color: '#3B82F6', path: '/tool/water' },
+  { id: 'pomodoro', name: '番茄钟', icon: Timer, color: '#EF4444', path: '/tool/pomodoro' },
+  { id: 'tax', name: '个税计算', icon: Receipt, color: '#F97316', path: '/tool/tax' },
+  { id: 'random', name: '随机决策', icon: Dices, color: '#A855F7', path: '/tool/random' },
 ];
 
 export default function Home() {
@@ -100,34 +104,28 @@ export default function Home() {
         <div className="home-section fade-in">
           <div className="section-header">
             <div className="section-title">
-              <span>工具箱</span>
+              <span>常用工具</span>
             </div>
+            <button className="section-more" onClick={() => navigate('/toolbox')}>
+              全部工具 <ChevronRight size={16} />
+            </button>
           </div>
-          <div className="tool-grid">
-            {TOOLS.map(tool => {
+          <div className="quick-grid">
+            {QUICK_TOOLS.map(tool => {
               const Icon = tool.icon;
               return (
                 <div
                   key={tool.id}
-                  className="tool-card"
+                  className="quick-item"
                   onClick={() => navigate(tool.path)}
                 >
-                  <div className="tool-icon" style={{ background: `${tool.color}15`, color: tool.color }}>
-                    <Icon size={28} />
+                  <div className="quick-icon" style={{ background: `${tool.color}12`, color: tool.color }}>
+                    <Icon size={22} />
                   </div>
-                  <div className="tool-name">{tool.name}</div>
-                  <div className="tool-desc">{tool.desc}</div>
+                  <span className="quick-name">{tool.name}</span>
                 </div>
               );
             })}
-
-            <div className="tool-card tool-card-placeholder">
-              <div className="tool-icon placeholder-icon">
-                <span>+</span>
-              </div>
-              <div className="tool-name">更多工具</div>
-              <div className="tool-desc">敬请期待</div>
-            </div>
           </div>
         </div>
       </div>

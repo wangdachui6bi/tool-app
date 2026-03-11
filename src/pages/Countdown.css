@@ -1,0 +1,296 @@
+.countdown-add-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  border-radius: 50%;
+}
+
+.countdown-add-btn:active {
+  background: var(--primary-light);
+}
+
+.countdown-empty {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.countdown-empty-icon {
+  font-size: 56px;
+  margin-bottom: 16px;
+}
+
+.countdown-empty-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 20px;
+}
+
+.countdown-empty-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 24px;
+  border-radius: 24px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+  box-shadow: 0 2px 8px var(--primary-glow);
+}
+
+.countdown-list {
+  padding: 8px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.countdown-card {
+  position: relative;
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.countdown-card.is-today {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+}
+
+.countdown-card-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  padding-right: 48px;
+}
+
+.countdown-card-icon {
+  font-size: 28px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(99, 102, 241, 0.08);
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.countdown-card.is-today .countdown-card-icon {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.countdown-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.countdown-card-name {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+
+.countdown-card-date {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.countdown-card.is-today .countdown-card-date {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.countdown-card-note {
+  font-size: 11px;
+  color: var(--text-light);
+  margin-top: 2px;
+}
+
+.countdown-card.is-today .countdown-card-note {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.countdown-card-right {
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.countdown-days {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.countdown-days-num {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1;
+}
+
+.countdown-card.is-today .countdown-days-num {
+  color: #fff;
+}
+
+.countdown-days-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.countdown-card.is-today .countdown-days-label {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.countdown-past {
+  font-size: 13px;
+  color: var(--danger);
+  font-weight: 500;
+}
+
+.countdown-today-badge {
+  font-size: 13px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.25);
+  padding: 4px 14px;
+  border-radius: 20px;
+}
+
+.countdown-delete-btn {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-light);
+  border-radius: 50%;
+}
+
+.countdown-card.is-today .countdown-delete-btn {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.countdown-delete-btn:active {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.countdown-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 20px;
+}
+
+.countdown-modal {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px;
+  width: 100%;
+  max-width: 360px;
+  animation: scaleIn 0.2s ease;
+}
+
+.countdown-modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.countdown-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.countdown-form-row label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.countdown-form-row input[type="text"],
+.countdown-form-row input[type="date"],
+.countdown-form-row textarea {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.countdown-form-row textarea {
+  resize: none;
+}
+
+.countdown-emoji-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.countdown-emoji-btn {
+  font-size: 22px;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  transition: all 0.15s;
+}
+
+.countdown-emoji-btn.selected {
+  background: var(--primary-light);
+  box-shadow: 0 0 0 2px var(--primary);
+}
+
+.countdown-modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.countdown-modal-cancel {
+  flex: 1;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.countdown-modal-save {
+  flex: 1;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  background: var(--primary);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.countdown-modal-save:disabled {
+  opacity: 0.5;
+}

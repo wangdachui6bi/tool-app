@@ -22,32 +22,9 @@
   font-size: 11px;
   transition: color 0.2s;
   padding: 4px 12px;
+  flex: 1;
 }
 
 .tab-bar-item.active {
   color: var(--primary);
-}
-
-.tab-bar-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-}
-
-.tab-bar-center-btn {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: -20px;
-  box-shadow: 0 4px 16px var(--primary-glow);
-  transition: transform 0.2s;
-}
-
-.tab-bar-center-btn:active {
-  transform: scale(0.92);
 }

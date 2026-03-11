@@ -1,0 +1,144 @@
+.weight-tracker-content {
+  padding: 0 16px 24px;
+}
+
+.weight-input-section {
+  margin-bottom: 12px;
+}
+
+.weight-input-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.weight-input-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.weight-input-group input {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  color: var(--text);
+}
+
+.weight-record-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px var(--primary-glow);
+}
+
+.weight-record-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.weight-record-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.weight-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.weight-stat {
+  text-align: center;
+  padding: 12px 8px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+}
+
+.weight-stat-label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.weight-stat-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.weight-chart-section {
+  margin-bottom: 12px;
+  min-height: 220px;
+}
+
+.weight-chart-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 220px;
+  font-size: 14px;
+  color: var(--text-light);
+}
+
+.weight-entries-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+
+.weight-entries-empty {
+  font-size: 14px;
+  color: var(--text-light);
+  padding: 20px;
+  text-align: center;
+}
+
+.weight-entries-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.weight-entry-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+}
+
+.weight-entry-date {
+  font-size: 14px;
+  color: var(--text);
+}
+
+.weight-entry-weight {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.weight-entry-delete {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-light);
+}
+
+.weight-entry-delete:active {
+  color: var(--danger);
+}

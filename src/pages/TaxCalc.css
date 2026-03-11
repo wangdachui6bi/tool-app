@@ -1,0 +1,151 @@
+.tax-form {
+  padding: 8px 16px;
+}
+
+.tax-input-group {
+  margin-bottom: 20px;
+}
+
+.tax-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.tax-input {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  font-size: 16px;
+  color: var(--text);
+}
+
+.tax-input::placeholder {
+  color: var(--text-light);
+}
+
+.tax-input::-webkit-inner-spin-button,
+.tax-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.tax-input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.tax-threshold {
+  font-size: 13px;
+  color: var(--text-light);
+  margin-bottom: 24px;
+}
+
+.tax-calc-btn {
+  width: 100%;
+  padding: 16px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 2px 12px var(--primary-glow);
+  transition: all 0.2s;
+}
+
+.tax-calc-btn:disabled {
+  background: var(--text-light);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.tax-calc-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.tax-result-card {
+  margin-top: 24px;
+  padding: 20px;
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.tax-result-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 15px;
+}
+
+.tax-result-row:last-child {
+  border-bottom: none;
+}
+
+.tax-result-main {
+  padding-top: 16px;
+  margin-top: 4px;
+  border-top: 4px solid var(--primary);
+}
+
+.tax-result-label {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.tax-result-value {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.tax-highlight {
+  color: var(--danger);
+}
+
+.tax-result-large {
+  font-size: 22px;
+  color: var(--primary);
+}
+
+.tax-reference {
+  margin-top: 20px;
+}
+
+.tax-reference-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.tax-table {
+  font-size: 12px;
+}
+
+.tax-table-header {
+  display: grid;
+  grid-template-columns: 40px 1fr 50px 70px;
+  gap: 8px;
+  padding: 10px 0;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+}
+
+.tax-table-row {
+  display: grid;
+  grid-template-columns: 40px 1fr 50px 70px;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+
+.tax-table-row:last-child {
+  border-bottom: none;
+}

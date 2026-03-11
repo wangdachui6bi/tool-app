@@ -112,3 +112,29 @@ a {
 .slide-up {
   animation: slideUp 0.3s ease;
 }
+
+.add-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 48px 16px 12px;
+}
+
+.add-back {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  border-radius: 50%;
+}
+
+.add-back:active {
+  background: var(--bg);
+}
+
+.add-nav-title {
+  font-size: 17px;
+  font-weight: 600;
+}

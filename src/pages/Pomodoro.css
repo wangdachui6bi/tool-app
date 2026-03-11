@@ -1,0 +1,110 @@
+.pomodoro-content {
+  padding: 0 16px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pomo-modes {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 28px;
+  width: 100%;
+  max-width: 340px;
+}
+
+.pomo-mode-btn {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  background: var(--bg);
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+
+.pomo-mode-btn.active {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.pomo-mode-btn:active {
+  opacity: 0.8;
+}
+
+.pomo-timer-wrap {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin-bottom: 16px;
+}
+
+.pomo-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.pomo-time {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 42px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.pomo-status {
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin-bottom: 28px;
+}
+
+.pomo-actions {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  max-width: 280px;
+}
+
+.pomo-primary-btn {
+  flex: 1;
+  padding: 14px 24px;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  box-shadow: 0 4px 16px var(--primary-glow);
+  transition: all 0.2s;
+}
+
+.pomo-primary-btn:active {
+  transform: scale(0.98);
+}
+
+.pomo-reset-btn {
+  padding: 14px 24px;
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text-secondary);
+  font-size: 16px;
+  font-weight: 500;
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+
+.pomo-reset-btn:active {
+  background: var(--border);
+}
+
+.pomo-counter {
+  margin-top: 24px;
+  font-size: 14px;
+  color: var(--text-light);
+}

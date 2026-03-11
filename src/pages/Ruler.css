@@ -1,0 +1,195 @@
+.ruler-page {
+  background: #fff;
+}
+
+.ruler-nav {
+  flex-shrink: 0;
+}
+
+.ruler-nav .add-back {
+  flex-shrink: 0;
+}
+
+.ruler-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+}
+
+.ruler-toggle:active {
+  background: var(--primary);
+  color: #fff;
+}
+
+.ruler-container {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ruler-track {
+  position: relative;
+  width: 100%;
+  min-height: 100%;
+}
+
+.ruler-side {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 36px;
+}
+
+.ruler-left {
+  left: 0;
+  border-left: 2px solid var(--text);
+}
+
+.ruler-right {
+  right: 0;
+  left: auto;
+  border-right: 2px solid var(--text);
+}
+
+.ruler-primary {
+  opacity: 1;
+}
+
+.ruler-secondary {
+  opacity: 0.55;
+}
+
+.ruler-mm-ticks {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 36px;
+  height: 100%;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--text) 0,
+    var(--text) 1px,
+    transparent 1px,
+    transparent 3.78px
+  );
+  opacity: 0.5;
+}
+
+.ruler-5mm-ticks {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 36px;
+  height: 100%;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 18.9px,
+    var(--text) 18.9px,
+    var(--text) 21.9px
+  );
+  opacity: 0.85;
+}
+
+.ruler-cm-ticks {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 36px;
+  height: 100%;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 37.8px,
+    var(--text) 37.8px,
+    var(--text) 39.8px
+  );
+}
+
+.ruler-cm-mark {
+  position: absolute;
+  left: 0;
+  width: 0;
+  height: 0;
+  z-index: 2;
+}
+
+.ruler-cm-label {
+  position: absolute;
+  left: 42px;
+  top: -10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.ruler-inch-ticks {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 36px;
+  height: 100%;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--text) 0,
+    var(--text) 1px,
+    transparent 1px,
+    transparent 6px
+  );
+  opacity: 0.5;
+}
+
+.ruler-inch-4ticks {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 36px;
+  height: 100%;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 24px,
+    var(--text) 24px,
+    var(--text) 27px
+  );
+  opacity: 0.85;
+}
+
+.ruler-inch-1ticks {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 36px;
+  height: 100%;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 96px,
+    var(--text) 96px,
+    var(--text) 99px
+  );
+}
+
+.ruler-inch-mark {
+  position: absolute;
+  right: 0;
+  left: auto;
+  width: 0;
+  height: 0;
+  z-index: 2;
+}
+
+.ruler-inch-label {
+  position: absolute;
+  right: 42px;
+  top: -10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+}
