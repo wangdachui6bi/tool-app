@@ -1,7 +1,7 @@
 {
   "name": "tool-app",
   "private": true,
-  "version": "1.0.5",
+  "version": "1.0.6",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,6 +11,7 @@
     "cap:open": "CAPACITOR_ANDROID_STUDIO_PATH='/Users/niuniu/Desktop/work-app/Android Studio.app' npx cap open android"
   },
   "dependencies": {
+    "@capacitor-community/file-opener": "^8.0.0",
     "@capacitor/android": "^8.2.0",
     "@capacitor/app": "^8.0.1",
     "@capacitor/core": "^8.2.0",
