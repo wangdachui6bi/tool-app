@@ -15,9 +15,9 @@ import { getAllEvents, addEvent, generateId } from "../stores/eventStore";
 import type { MemorialEvent } from "../types";
 import "./Profile.css";
 
-const APP_VERSION = "1.0.5";
-// { "version": "1.0.6", "url": "https://example.com/app-release.apk", "changelog": "更新说明" }
-const UPDATE_CHECK_URL = "https://your-server.com/version.json";
+const APP_VERSION = "1.0.6";
+const UPDATE_CHECK_URL =
+  "https://your-server.com/api/apps/tool-app/releases/latest?platform=android";
 
 interface UpdateInfo {
   version: string;

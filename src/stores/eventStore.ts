@@ -32,6 +32,12 @@ export async function deleteEvent(id: string): Promise<void> {
   await localforage.setItem(EVENTS_KEY, events.filter(e => e.id !== id));
 }
 
+export async function deleteEvents(ids: string[]): Promise<void> {
+  const idSet = new Set(ids);
+  const events = await getAllEvents();
+  await localforage.setItem(EVENTS_KEY, events.filter(e => !idSet.has(e.id)));
+}
+
 export async function getEventById(id: string): Promise<MemorialEvent | null> {
   const events = await getAllEvents();
   return events.find(e => e.id === id) || null;

@@ -220,3 +220,178 @@
   background: rgba(255, 255, 255, 0.2);
   color: #fff;
 }
+
+/* Header actions */
+.anni-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.anni-manage-btn {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  padding: 6px 14px;
+  border-radius: 18px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+
+.anni-manage-btn:active {
+  color: var(--primary);
+}
+
+.anni-cancel-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  padding: 6px 14px;
+  border-radius: 18px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+
+/* Batch action bar */
+.anni-batch-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  margin-bottom: 4px;
+}
+
+.anni-batch-select-all {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--primary);
+}
+
+.anni-batch-count {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.anni-batch-delete-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: var(--danger);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.anni-batch-delete-btn:disabled {
+  opacity: 0.4;
+}
+
+.anni-batch-delete-btn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+/* Checkbox in cards */
+.anni-checkbox {
+  flex-shrink: 0;
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  margin-right: 8px;
+}
+
+.anni-card.batch-selected .anni-checkbox {
+  color: var(--primary);
+}
+
+.anni-card.batch-selected {
+  border: 2px solid var(--primary);
+  background: var(--primary-light);
+}
+
+/* Confirm dialog */
+.anni-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: anniFadeIn 0.2s ease;
+}
+
+@keyframes anniFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.anni-confirm-dialog {
+  width: 100%;
+  max-width: 300px;
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px;
+  text-align: center;
+  animation: anniScaleIn 0.2s ease;
+}
+
+@keyframes anniScaleIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.anni-confirm-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.anni-confirm-message {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.anni-confirm-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.anni-confirm-cancel {
+  flex: 1;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.anni-confirm-delete {
+  flex: 1;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  background: var(--danger);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.anni-confirm-cancel:active {
+  opacity: 0.8;
+}
+
+.anni-confirm-delete:active {
+  transform: scale(0.98);
+}

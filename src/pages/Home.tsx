@@ -1,13 +1,17 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   CalendarHeart, ChevronRight, PartyPopper,
   CheckSquare, CalendarClock, ListTodo,
   Droplets, Timer, Receipt, Dices,
+  Scale, Calculator, QrCode, RulerIcon,
+  Settings2, X, Check, GripVertical,
+  ChevronUp, ChevronDown,
 } from 'lucide-react';
 import dayjs from 'dayjs';
 import { getAllEvents } from '../stores/eventStore';
 import { getCountdowns } from '../stores/countdownStore';
+import { getQuickToolIds, saveQuickToolIds } from '../stores/quickToolStore';
 import { sortByCountdown, getEventTypeIcon, getYearLabel } from '../utils/dateHelpers';
 import './Home.css';
 
@@ -23,7 +27,15 @@ interface UpcomingItem {
   source: 'anniversary' | 'countdown';
 }
 
-const QUICK_TOOLS = [
+interface ToolDef {
+  id: string;
+  name: string;
+  icon: React.ComponentType<{ size?: number }>;
+  color: string;
+  path: string;
+}
+
+const ALL_TOOLS: ToolDef[] = [
   { id: 'anniversary', name: '纪念日', icon: CalendarHeart, color: '#6366F1', path: '/anniversary' },
   { id: 'habit', name: '习惯打卡', icon: CheckSquare, color: '#10B981', path: '/tool/habit' },
   { id: 'countdown', name: '倒数日', icon: CalendarClock, color: '#F59E0B', path: '/tool/countdown' },
@@ -32,11 +44,18 @@ const QUICK_TOOLS = [
   { id: 'pomodoro', name: '番茄钟', icon: Timer, color: '#EF4444', path: '/tool/pomodoro' },
   { id: 'tax', name: '个税计算', icon: Receipt, color: '#F97316', path: '/tool/tax' },
   { id: 'random', name: '随机决策', icon: Dices, color: '#A855F7', path: '/tool/random' },
+  { id: 'weight', name: '体重记录', icon: Scale, color: '#EC4899', path: '/tool/weight' },
+  { id: 'bmi', name: 'BMI计算', icon: Calculator, color: '#14B8A6', path: '/tool/bmi' },
+  { id: 'qrcode', name: '二维码', icon: QrCode, color: '#1E293B', path: '/tool/qrcode' },
+  { id: 'ruler', name: '尺子', icon: RulerIcon, color: '#64748B', path: '/tool/ruler' },
 ];
 
 export default function Home() {
   const navigate = useNavigate();
   const [upcoming, setUpcoming] = useState<UpcomingItem[]>([]);
+  const [quickIds, setQuickIds] = useState<string[]>([]);
+  const [showEditor, setShowEditor] = useState(false);
+  const [editIds, setEditIds] = useState<string[]>([]);
 
   const loadData = useCallback(async () => {
     const items: UpcomingItem[] = [];
@@ -87,6 +106,85 @@ export default function Home() {
       window.removeEventListener('countdownUpdated', handler);
     };
   }, [loadData]);
+
+  useEffect(() => {
+    getQuickToolIds().then(setQuickIds);
+  }, []);
+
+  const quickTools = quickIds
+    .map(id => ALL_TOOLS.find(t => t.id === id))
+    .filter((t): t is ToolDef => !!t);
+
+  const openEditor = () => {
+    setEditIds([...quickIds]);
+    setShowEditor(true);
+  };
+
+  const [dragIdx, setDragIdx] = useState<number | null>(null);
+  const [dragOverIdx, setDragOverIdx] = useState<number | null>(null);
+  const sortListRef = useRef<HTMLDivElement>(null);
+  const dragStartY = useRef(0);
+  const itemRects = useRef<DOMRect[]>([]);
+
+  const toggleTool = (id: string) => {
+    setEditIds(prev =>
+      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    );
+  };
+
+  const moveItem = (from: number, to: number) => {
+    if (to < 0 || to >= editIds.length) return;
+    setEditIds(prev => {
+      const next = [...prev];
+      const [item] = next.splice(from, 1);
+      next.splice(to, 0, item);
+      return next;
+    });
+  };
+
+  const handleDragStart = (idx: number, clientY: number) => {
+    setDragIdx(idx);
+    setDragOverIdx(idx);
+    dragStartY.current = clientY;
+    if (sortListRef.current) {
+      const items = sortListRef.current.querySelectorAll('.tool-sort-item');
+      itemRects.current = Array.from(items).map(el => el.getBoundingClientRect());
+    }
+  };
+
+  const handleDragMove = (clientY: number) => {
+    if (dragIdx === null) return;
+    const rects = itemRects.current;
+    if (rects.length === 0) return;
+    let newIdx = dragIdx;
+    for (let i = 0; i < rects.length; i++) {
+      const mid = rects[i].top + rects[i].height / 2;
+      if (clientY < mid) {
+        newIdx = i;
+        break;
+      }
+      newIdx = i;
+      if (clientY >= mid) newIdx = i;
+    }
+    if (clientY > rects[rects.length - 1].top + rects[rects.length - 1].height / 2) {
+      newIdx = rects.length - 1;
+    }
+    setDragOverIdx(newIdx);
+  };
+
+  const handleDragEnd = () => {
+    if (dragIdx !== null && dragOverIdx !== null && dragIdx !== dragOverIdx) {
+      moveItem(dragIdx, dragOverIdx);
+    }
+    setDragIdx(null);
+    setDragOverIdx(null);
+  };
+
+  const saveEdit = async () => {
+    await saveQuickToolIds(editIds);
+    setQuickIds(editIds);
+    setShowEditor(false);
+  };
 
   const today = dayjs();
 
@@ -156,12 +254,17 @@ export default function Home() {
             <div className="section-title">
               <span>常用工具</span>
             </div>
-            <button className="section-more" onClick={() => navigate('/toolbox')}>
-              全部工具 <ChevronRight size={16} />
-            </button>
+            <div className="section-header-actions">
+              <button className="section-edit-btn" onClick={openEditor}>
+                <Settings2 size={16} />
+              </button>
+              <button className="section-more" onClick={() => navigate('/toolbox')}>
+                全部工具 <ChevronRight size={16} />
+              </button>
+            </div>
           </div>
           <div className="quick-grid">
-            {QUICK_TOOLS.map(tool => {
+            {quickTools.map(tool => {
               const Icon = tool.icon;
               return (
                 <div
@@ -179,6 +282,104 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {showEditor && (
+        <div className="tool-editor-overlay" onClick={() => setShowEditor(false)}>
+          <div className="tool-editor-sheet" onClick={e => e.stopPropagation()}>
+            <div className="tool-editor-header">
+              <button className="tool-editor-close" onClick={() => setShowEditor(false)}>
+                <X size={20} />
+              </button>
+              <span className="tool-editor-title">自定义常用工具</span>
+              <button className="tool-editor-save" onClick={saveEdit}>
+                <Check size={20} />
+              </button>
+            </div>
+            <p className="tool-editor-hint">点击选择工具，拖拽或箭头调整顺序</p>
+
+            {editIds.length > 0 && (
+              <div className="tool-sort-section">
+                <div className="tool-sort-label">已选 {editIds.length} 个（拖拽排序）</div>
+                <div
+                  className="tool-sort-list"
+                  ref={sortListRef}
+                  onTouchMove={e => handleDragMove(e.touches[0].clientY)}
+                  onTouchEnd={handleDragEnd}
+                  onMouseMove={e => { if (dragIdx !== null) handleDragMove(e.clientY); }}
+                  onMouseUp={handleDragEnd}
+                  onMouseLeave={handleDragEnd}
+                >
+                  {editIds.map((id, idx) => {
+                    const tool = ALL_TOOLS.find(t => t.id === id);
+                    if (!tool) return null;
+                    const Icon = tool.icon;
+                    const isDragging = dragIdx === idx;
+                    const isOver = dragOverIdx === idx && dragIdx !== null && dragIdx !== idx;
+                    return (
+                      <div
+                        key={id}
+                        className={`tool-sort-item ${isDragging ? 'dragging' : ''} ${isOver ? 'drag-over' : ''}`}
+                      >
+                        <div
+                          className="tool-sort-handle"
+                          onTouchStart={e => handleDragStart(idx, e.touches[0].clientY)}
+                          onMouseDown={e => handleDragStart(idx, e.clientY)}
+                        >
+                          <GripVertical size={16} />
+                        </div>
+                        <div className="tool-sort-icon" style={{ background: `${tool.color}12`, color: tool.color }}>
+                          <Icon size={18} />
+                        </div>
+                        <span className="tool-sort-name">{tool.name}</span>
+                        <div className="tool-sort-arrows">
+                          <button
+                            className="tool-sort-arrow"
+                            onClick={() => moveItem(idx, idx - 1)}
+                            disabled={idx === 0}
+                          >
+                            <ChevronUp size={16} />
+                          </button>
+                          <button
+                            className="tool-sort-arrow"
+                            onClick={() => moveItem(idx, idx + 1)}
+                            disabled={idx === editIds.length - 1}
+                          >
+                            <ChevronDown size={16} />
+                          </button>
+                        </div>
+                        <button className="tool-sort-remove" onClick={() => toggleTool(id)}>
+                          <X size={14} />
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            <div className="tool-editor-grid">
+              {ALL_TOOLS.filter(t => !editIds.includes(t.id)).map(tool => {
+                const Icon = tool.icon;
+                return (
+                  <div
+                    key={tool.id}
+                    className="tool-editor-item"
+                    onClick={() => toggleTool(tool.id)}
+                  >
+                    <div className="tool-editor-icon" style={{ background: `${tool.color}12`, color: tool.color }}>
+                      <Icon size={20} />
+                    </div>
+                    <span className="tool-editor-name">{tool.name}</span>
+                  </div>
+                );
+              })}
+            </div>
+            {ALL_TOOLS.filter(t => !editIds.includes(t.id)).length > 0 && (
+              <div className="tool-editor-add-hint">点击上方工具添加到常用</div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

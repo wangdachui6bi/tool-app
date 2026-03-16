@@ -142,3 +142,157 @@
 .weight-entry-delete:active {
   color: var(--danger);
 }
+
+/* Person switcher */
+.weight-person-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.weight-person-selector {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: var(--bg);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.weight-person-selector:active {
+  background: var(--primary-light);
+}
+
+.weight-person-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.weight-person-add-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  background: var(--bg);
+}
+
+.weight-person-add-btn:active {
+  color: var(--primary);
+}
+
+.weight-person-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 16px;
+  margin-top: 4px;
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  z-index: 10;
+  min-width: 120px;
+}
+
+.weight-person-option {
+  padding: 12px 18px;
+  font-size: 14px;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.weight-person-option:active {
+  background: var(--bg);
+}
+
+.weight-person-option.active {
+  color: var(--primary);
+  font-weight: 600;
+  background: var(--primary-light);
+}
+
+/* Add person dialog */
+.weight-add-person-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.weight-add-person-dialog {
+  width: 100%;
+  max-width: 320px;
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 20px;
+  animation: scaleIn 0.2s ease;
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.weight-add-person-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.weight-add-person-header button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-light);
+}
+
+.weight-add-person-input {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.weight-add-person-confirm {
+  width: 100%;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.weight-add-person-confirm:disabled {
+  opacity: 0.5;
+}
+
+.weight-add-person-confirm:active:not(:disabled) {
+  transform: scale(0.98);
+}

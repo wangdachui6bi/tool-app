@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus } from 'lucide-react';
-import { getAllEvents } from '../stores/eventStore';
+import { Plus, Trash2, CheckSquare, Square, X } from 'lucide-react';
+import { getAllEvents, deleteEvents } from '../stores/eventStore';
 import { sortByCountdown, getEventTypeIcon, getEventTypeLabel, getYearLabel } from '../utils/dateHelpers';
 import type { EventCountdown } from '../utils/dateHelpers';
 import type { EventType } from '../types';
@@ -19,6 +19,9 @@ export default function Anniversary() {
   const navigate = useNavigate();
   const [items, setItems] = useState<EventCountdown[]>([]);
   const [filter, setFilter] = useState<EventType | 'all'>('all');
+  const [batchMode, setBatchMode] = useState(false);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const loadData = useCallback(async () => {
     const events = await getAllEvents();
@@ -36,14 +39,69 @@ export default function Anniversary() {
     ? items
     : items.filter(i => i.event.type === filter);
 
+  const enterBatchMode = () => {
+    setBatchMode(true);
+    setSelected(new Set());
+  };
+
+  const exitBatchMode = () => {
+    setBatchMode(false);
+    setSelected(new Set());
+  };
+
+  const toggleSelect = (id: string) => {
+    setSelected(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selected.size === filtered.length) {
+      setSelected(new Set());
+    } else {
+      setSelected(new Set(filtered.map(i => i.event.id)));
+    }
+  };
+
+  const handleBatchDelete = async () => {
+    if (selected.size === 0) return;
+    await deleteEvents(Array.from(selected));
+    window.dispatchEvent(new Event('eventUpdated'));
+    setShowConfirm(false);
+    exitBatchMode();
+    loadData();
+  };
+
   return (
     <div className="page">
       <div className="page-content">
         <div className="anni-header">
           <h1 className="anni-title">纪念日</h1>
-          <button className="anni-add-btn" onClick={() => navigate('/anniversary/add')}>
-            <Plus size={20} />
-          </button>
+          <div className="anni-header-actions">
+            {!batchMode ? (
+              <>
+                {items.length > 0 && (
+                  <button className="anni-manage-btn" onClick={enterBatchMode}>
+                    管理
+                  </button>
+                )}
+                <button className="anni-add-btn" onClick={() => navigate('/anniversary/add')}>
+                  <Plus size={20} />
+                </button>
+              </>
+            ) : (
+              <button className="anni-cancel-btn" onClick={exitBatchMode}>
+                <X size={16} />
+                <span>取消</span>
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="anni-filters">
@@ -58,6 +116,24 @@ export default function Anniversary() {
           ))}
         </div>
 
+        {batchMode && filtered.length > 0 && (
+          <div className="anni-batch-bar fade-in">
+            <button className="anni-batch-select-all" onClick={toggleSelectAll}>
+              {selected.size === filtered.length ? <CheckSquare size={18} /> : <Square size={18} />}
+              <span>{selected.size === filtered.length ? '取消全选' : '全选'}</span>
+            </button>
+            <span className="anni-batch-count">已选 {selected.size} 项</span>
+            <button
+              className="anni-batch-delete-btn"
+              onClick={() => setShowConfirm(true)}
+              disabled={selected.size === 0}
+            >
+              <Trash2 size={16} />
+              <span>删除</span>
+            </button>
+          </div>
+        )}
+
         {filtered.length === 0 ? (
           <div className="anni-empty fade-in">
             <div className="empty-icon">📅</div>
@@ -69,9 +145,24 @@ export default function Anniversary() {
             {filtered.map(item => (
               <div
                 key={item.event.id}
-                className={`anni-card ${item.isToday ? 'is-today' : ''}`}
-                onClick={() => navigate(`/event/${item.event.id}`)}
+                className={`anni-card ${item.isToday ? 'is-today' : ''} ${batchMode && selected.has(item.event.id) ? 'batch-selected' : ''}`}
+                onClick={() => {
+                  if (batchMode) {
+                    toggleSelect(item.event.id);
+                  } else {
+                    navigate(`/event/${item.event.id}`);
+                  }
+                }}
               >
+                {batchMode && (
+                  <div className="anni-checkbox">
+                    {selected.has(item.event.id) ? (
+                      <CheckSquare size={20} />
+                    ) : (
+                      <Square size={20} />
+                    )}
+                  </div>
+                )}
                 <div className="anni-card-left">
                   <div className="anni-card-icon">
                     {item.event.icon || getEventTypeIcon(item.event.type)}
@@ -103,6 +194,25 @@ export default function Anniversary() {
           </div>
         )}
       </div>
+
+      {showConfirm && (
+        <div className="anni-confirm-overlay" onClick={() => setShowConfirm(false)}>
+          <div className="anni-confirm-dialog" onClick={e => e.stopPropagation()}>
+            <div className="anni-confirm-title">确认删除</div>
+            <div className="anni-confirm-message">
+              确定要删除选中的 {selected.size} 个纪念日吗？此操作不可恢复。
+            </div>
+            <div className="anni-confirm-actions">
+              <button className="anni-confirm-cancel" onClick={() => setShowConfirm(false)}>
+                取消
+              </button>
+              <button className="anni-confirm-delete" onClick={handleBatchDelete}>
+                删除
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

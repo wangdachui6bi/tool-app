@@ -240,3 +240,286 @@
   text-align: center;
   line-height: 1.2;
 }
+
+.section-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-edit-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  background: var(--card);
+  box-shadow: var(--shadow);
+  transition: all 0.2s;
+}
+
+.section-edit-btn:active {
+  transform: scale(0.9);
+  color: var(--primary);
+}
+
+/* Tool Editor Sheet */
+.tool-editor-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.tool-editor-sheet {
+  width: 100%;
+  max-height: 80vh;
+  background: var(--bg);
+  border-radius: 20px 20px 0 0;
+  overflow-y: auto;
+  padding: 0 0 calc(20px + env(safe-area-inset-bottom));
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.tool-editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 16px 8px;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 1;
+}
+
+.tool-editor-close,
+.tool-editor-save {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tool-editor-close {
+  color: var(--text-secondary);
+}
+
+.tool-editor-save {
+  color: #fff;
+  background: var(--primary);
+}
+
+.tool-editor-save:active {
+  transform: scale(0.92);
+}
+
+.tool-editor-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.tool-editor-hint {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-light);
+  padding: 0 16px 12px;
+}
+
+.tool-editor-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  padding: 0 16px 16px;
+}
+
+.tool-editor-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 4px;
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.15s;
+  border: 2px solid transparent;
+}
+
+.tool-editor-item:active {
+  transform: scale(0.95);
+}
+
+.tool-editor-item.selected {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+
+.tool-editor-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tool-editor-name {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.tool-editor-check {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Sortable selected list */
+.tool-sort-section {
+  padding: 0 16px 16px;
+}
+
+.tool-sort-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.tool-sort-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.tool-sort-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+  border: 2px solid transparent;
+}
+
+.tool-sort-item.dragging {
+  opacity: 0.5;
+  transform: scale(0.97);
+}
+
+.tool-sort-item.drag-over {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+
+.tool-sort-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-light);
+  cursor: grab;
+  touch-action: none;
+  padding: 4px 0;
+}
+
+.tool-sort-handle:active {
+  cursor: grabbing;
+  color: var(--primary);
+}
+
+.tool-sort-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tool-sort-name {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.tool-sort-arrows {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.tool-sort-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 20px;
+  color: var(--text-secondary);
+  transition: color 0.1s;
+}
+
+.tool-sort-arrow:disabled {
+  opacity: 0.25;
+}
+
+.tool-sort-arrow:active:not(:disabled) {
+  color: var(--primary);
+}
+
+.tool-sort-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: var(--text-light);
+  flex-shrink: 0;
+}
+
+.tool-sort-remove:active {
+  color: var(--danger);
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.tool-editor-add-hint {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-light);
+  padding: 0 16px 8px;
+}

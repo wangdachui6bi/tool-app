@@ -1,9 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Trash2 } from 'lucide-react';
+import { ArrowLeft, Trash2, UserPlus, ChevronDown, X } from 'lucide-react';
 import ReactECharts from 'echarts-for-react';
 import dayjs from 'dayjs';
-import { getWeightEntries, addWeightEntry, deleteWeightEntry } from '../stores/weightStore';
+import {
+  getWeightEntries, addWeightEntry, deleteWeightEntry,
+  getPersons, addPerson, getActivePerson, setActivePerson,
+} from '../stores/weightStore';
 import { generateId } from '../stores/eventStore';
 import type { WeightEntry } from '../types';
 import './WeightTracker.css';
@@ -13,15 +16,42 @@ export default function WeightTracker() {
   const [entries, setEntries] = useState<WeightEntry[]>([]);
   const [weight, setWeight] = useState('');
   const [date, setDate] = useState(dayjs().format('YYYY-MM-DD'));
+  const [persons, setPersons] = useState<string[]>([]);
+  const [activePerson, setActivePersonState] = useState('我');
+  const [showPersonMenu, setShowPersonMenu] = useState(false);
+  const [showAddPerson, setShowAddPerson] = useState(false);
+  const [newPersonName, setNewPersonName] = useState('');
 
   const loadData = useCallback(async () => {
-    const list = await getWeightEntries();
+    const p = await getActivePerson();
+    setActivePersonState(p);
+    const ps = await getPersons();
+    setPersons(ps);
+    const list = await getWeightEntries(p);
     setEntries(list);
   }, []);
 
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  const switchPerson = async (name: string) => {
+    await setActivePerson(name);
+    setActivePersonState(name);
+    setShowPersonMenu(false);
+    const list = await getWeightEntries(name);
+    setEntries(list);
+  };
+
+  const handleAddPerson = async () => {
+    const trimmed = newPersonName.trim();
+    if (!trimmed || persons.includes(trimmed)) return;
+    await addPerson(trimmed);
+    setNewPersonName('');
+    setShowAddPerson(false);
+    await switchPerson(trimmed);
+    setPersons(await getPersons());
+  };
 
   const handleAdd = async () => {
     const w = parseFloat(weight);
@@ -30,17 +60,20 @@ export default function WeightTracker() {
       id: generateId(),
       date,
       weight: w,
+      person: activePerson,
     };
     await addWeightEntry(entry);
     setWeight('');
     setDate(dayjs().format('YYYY-MM-DD'));
-    loadData();
+    const list = await getWeightEntries(activePerson);
+    setEntries(list);
   };
 
   const handleDelete = async (id: string) => {
     if (!window.confirm('确定要删除这条记录吗？')) return;
     await deleteWeightEntry(id);
-    loadData();
+    const list = await getWeightEntries(activePerson);
+    setEntries(list);
   };
 
   const currentWeight = entries.length > 0 ? entries[entries.length - 1].weight : null;
@@ -101,6 +134,57 @@ export default function WeightTracker() {
       </div>
 
       <div className="page-content no-tab weight-tracker-content">
+        {/* Person switcher */}
+        <div className="weight-person-bar card fade-in">
+          <div className="weight-person-selector" onClick={() => setShowPersonMenu(!showPersonMenu)}>
+            <span className="weight-person-name">{activePerson}</span>
+            <ChevronDown size={16} />
+          </div>
+          <button className="weight-person-add-btn" onClick={() => setShowAddPerson(true)}>
+            <UserPlus size={18} />
+          </button>
+          {showPersonMenu && (
+            <div className="weight-person-dropdown">
+              {persons.map(p => (
+                <div
+                  key={p}
+                  className={`weight-person-option ${p === activePerson ? 'active' : ''}`}
+                  onClick={() => switchPerson(p)}
+                >
+                  {p}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {showAddPerson && (
+          <div className="weight-add-person-overlay" onClick={() => setShowAddPerson(false)}>
+            <div className="weight-add-person-dialog" onClick={e => e.stopPropagation()}>
+              <div className="weight-add-person-header">
+                <span>添加成员</span>
+                <button onClick={() => setShowAddPerson(false)}><X size={18} /></button>
+              </div>
+              <input
+                type="text"
+                className="weight-add-person-input"
+                placeholder="输入姓名"
+                value={newPersonName}
+                onChange={e => setNewPersonName(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleAddPerson()}
+                autoFocus
+              />
+              <button
+                className="weight-add-person-confirm"
+                onClick={handleAddPerson}
+                disabled={!newPersonName.trim()}
+              >
+                添加
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="weight-input-section card fade-in">
           <div className="weight-input-row">
             <div className="weight-input-group">
