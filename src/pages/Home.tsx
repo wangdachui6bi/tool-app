@@ -4,7 +4,7 @@ import {
   CalendarHeart, ChevronRight, PartyPopper,
   CheckSquare, CalendarClock, ListTodo,
   Droplets, Timer, Receipt, Dices,
-  Scale, Calculator, QrCode, RulerIcon,
+  Scale, Calculator, QrCode, RulerIcon, LineChart,
   Settings2, X, Check, GripVertical,
   ChevronUp, ChevronDown,
 } from 'lucide-react';
@@ -48,6 +48,7 @@ const ALL_TOOLS: ToolDef[] = [
   { id: 'bmi', name: 'BMI计算', icon: Calculator, color: '#14B8A6', path: '/tool/bmi' },
   { id: 'qrcode', name: '二维码', icon: QrCode, color: '#1E293B', path: '/tool/qrcode' },
   { id: 'ruler', name: '尺子', icon: RulerIcon, color: '#64748B', path: '/tool/ruler' },
+  { id: 'stock', name: '股票助手', icon: LineChart, color: '#F43F5E', path: '/tool/stock' },
 ];
 
 export default function Home() {

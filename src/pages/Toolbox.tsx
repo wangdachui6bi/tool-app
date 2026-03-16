@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   CalendarHeart, CheckSquare, CalendarClock, ListTodo, Dices,
   Droplets, Scale, Calculator,
-  Timer, QrCode,
+  Timer, QrCode, LineChart,
   Receipt, RulerIcon,
 } from 'lucide-react';
 import './Toolbox.css';
@@ -45,6 +45,7 @@ const CATEGORIES: ToolCategory[] = [
     tools: [
       { id: 'pomodoro', name: '番茄钟', desc: '专注工作计时', icon: Timer, color: '#EF4444', path: '/tool/pomodoro' },
       { id: 'qrcode', name: '二维码', desc: '生成二维码', icon: QrCode, color: '#1E293B', path: '/tool/qrcode' },
+      { id: 'stock', name: '股票助手', desc: '智能交易助手', icon: LineChart, color: '#F43F5E', path: '/tool/stock' },
     ],
   },
   {
