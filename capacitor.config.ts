@@ -5,7 +5,8 @@ const config: CapacitorConfig = {
   appName: '工具集',
   webDir: 'dist',
   server: {
-    cleartext: true
+    cleartext: true,
+    allowNavigation: ['111.229.151.210'],
   },
   plugins: {
     CapacitorHttp: {
