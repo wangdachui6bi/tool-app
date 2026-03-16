@@ -15,9 +15,11 @@ import { getAllEvents, addEvent, generateId } from "../stores/eventStore";
 import type { MemorialEvent } from "../types";
 import "./Profile.css";
 
-const APP_VERSION = "1.0.6";
-const UPDATE_CHECK_URL =
-  "https://your-server.com/api/apps/tool-app/releases/latest?platform=android";
+declare const __APP_VERSION__: string;
+
+const APP_VERSION = __APP_VERSION__;
+const UPDATE_SERVER = import.meta.env.VITE_UPDATE_SERVER_URL || "";
+const UPDATE_CHECK_URL = `${UPDATE_SERVER}/api/apps/tool-app/releases/latest?platform=android`;
 
 interface UpdateInfo {
   version: string;
