@@ -106,15 +106,25 @@ export default function Profile() {
     try {
       setUpdateChecking(true);
       const res = await fetch(UPDATE_CHECK_URL, { cache: "no-store" });
+      
+      if (!res.ok) {
+        throw new Error(`服务器返回错误: ${res.status}`);
+      }
+
       const data: UpdateInfo = await res.json();
+      if (!data || !data.version) {
+        throw new Error("返回数据格式错误");
+      }
+
       if (compareVersions(data.version, APP_VERSION) > 0) {
         setUpdateInfo(data);
         setShowUpdateDialog(true);
       } else {
         flashSuccess("已是最新版本");
       }
-    } catch {
-      flashSuccess("检查更新失败");
+    } catch (e: any) {
+      flashSuccess(`检查更新失败: ${e.message || '未知错误'}`);
+      console.error('Update check failed:', e);
     } finally {
       setUpdateChecking(false);
     }
