@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   CalendarHeart, CheckSquare, CalendarClock, ListTodo, Dices,
   Droplets, Scale, Calculator,
-  Timer, QrCode, LineChart,
+  Timer, QrCode, LineChart, ShieldPlus,
   Receipt, RulerIcon,
 } from 'lucide-react';
 import './Toolbox.css';
@@ -38,6 +38,7 @@ const CATEGORIES: ToolCategory[] = [
       { id: 'water', name: '喝水记录', desc: '每日饮水追踪', icon: Droplets, color: '#3B82F6', path: '/tool/water' },
       { id: 'weight', name: '体重记录', desc: '体重趋势追踪', icon: Scale, color: '#EC4899', path: '/tool/weight' },
       { id: 'bmi', name: 'BMI计算', desc: '身体质量指数', icon: Calculator, color: '#14B8A6', path: '/tool/bmi' },
+      { id: 'skin', name: '皮肤护理', desc: '痘痘与毛囊炎观察', icon: ShieldPlus, color: '#F59E0B', path: '/tool/skin' },
     ],
   },
   {

@@ -5,6 +5,7 @@ import {
   CheckSquare, CalendarClock, ListTodo,
   Droplets, Timer, Receipt, Dices,
   Scale, Calculator, QrCode, RulerIcon, LineChart,
+  ShieldPlus,
   Settings2, X, Check, GripVertical,
   ChevronUp, ChevronDown,
 } from 'lucide-react';
@@ -12,6 +13,7 @@ import dayjs from 'dayjs';
 import { getAllEvents } from '../stores/eventStore';
 import { getCountdowns } from '../stores/countdownStore';
 import { getQuickToolIds, saveQuickToolIds } from '../stores/quickToolStore';
+import { getSkinCareRecordByDate } from '../stores/skinCareStore';
 import { sortByCountdown, getEventTypeIcon, getYearLabel } from '../utils/dateHelpers';
 import './Home.css';
 
@@ -46,6 +48,7 @@ const ALL_TOOLS: ToolDef[] = [
   { id: 'random', name: '随机决策', icon: Dices, color: '#A855F7', path: '/tool/random' },
   { id: 'weight', name: '体重记录', icon: Scale, color: '#EC4899', path: '/tool/weight' },
   { id: 'bmi', name: 'BMI计算', icon: Calculator, color: '#14B8A6', path: '/tool/bmi' },
+  { id: 'skin', name: '皮肤护理', icon: ShieldPlus, color: '#F59E0B', path: '/tool/skin' },
   { id: 'qrcode', name: '二维码', icon: QrCode, color: '#1E293B', path: '/tool/qrcode' },
   { id: 'ruler', name: '尺子', icon: RulerIcon, color: '#64748B', path: '/tool/ruler' },
   { id: 'stock', name: '股票助手', icon: LineChart, color: '#F43F5E', path: '/tool/stock' },
@@ -57,6 +60,7 @@ export default function Home() {
   const [quickIds, setQuickIds] = useState<string[]>([]);
   const [showEditor, setShowEditor] = useState(false);
   const [editIds, setEditIds] = useState<string[]>([]);
+  const [skinPending, setSkinPending] = useState(false);
 
   const loadData = useCallback(async () => {
     const items: UpcomingItem[] = [];
@@ -110,6 +114,31 @@ export default function Home() {
 
   useEffect(() => {
     getQuickToolIds().then(setQuickIds);
+  }, []);
+
+  useEffect(() => {
+    const today = dayjs().format('YYYY-MM-DD');
+
+    const loadSkinReminder = async () => {
+      const record = await getSkinCareRecordByDate(today);
+      const pending = !(
+        record.notes.trim().length > 0 ||
+        record.photos.length > 0 ||
+        record.triggers.length > 0 ||
+        record.pus ||
+        record.spreading ||
+        record.fever ||
+        record.rapidWorsening ||
+        record.itchLevel > 0 ||
+        record.painLevel > 0 ||
+        record.rednessLevel > 1 ||
+        record.bumpLevel !== 2 ||
+        Object.values(record.routine).some(Boolean)
+      );
+      setSkinPending(pending);
+    };
+
+    loadSkinReminder();
   }, []);
 
   const quickTools = quickIds
@@ -273,8 +302,11 @@ export default function Home() {
                   className="quick-item"
                   onClick={() => navigate(tool.path)}
                 >
-                  <div className="quick-icon" style={{ background: `${tool.color}12`, color: tool.color }}>
-                    <Icon size={22} />
+                  <div className="quick-icon-wrap">
+                    <div className="quick-icon" style={{ background: `${tool.color}12`, color: tool.color }}>
+                      <Icon size={22} />
+                    </div>
+                    {tool.id === 'skin' && skinPending && <span className="quick-badge">1</span>}
                   </div>
                   <span className="quick-name">{tool.name}</span>
                 </div>
