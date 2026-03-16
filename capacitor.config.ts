@@ -4,6 +4,9 @@ const config: CapacitorConfig = {
   appId: 'com.toolapp.collection',
   appName: '工具集',
   webDir: 'dist',
+  server: {
+    cleartext: true
+  },
   android: {
     path: 'android',
   },
