@@ -14,7 +14,12 @@ import { getAllEvents } from '../stores/eventStore';
 import { getCountdowns } from '../stores/countdownStore';
 import { getQuickToolIds, saveQuickToolIds } from '../stores/quickToolStore';
 import { getSkinCareRecordByDate } from '../stores/skinCareStore';
-import { getReminders, type ReminderItem } from '../stores/reminderStore';
+import {
+  getReminderDueAt,
+  getReminderRepeatLabel,
+  getReminders,
+  type ReminderItem,
+} from '../stores/reminderStore';
 import { sortByCountdown, getEventTypeIcon, getYearLabel } from '../utils/dateHelpers';
 import './Home.css';
 
@@ -148,13 +153,13 @@ export default function Home() {
     const loadReminderHighlights = async () => {
       const now = dayjs();
       const reminders = await getReminders();
-      const active = reminders.filter((item) => !item.completed);
-      const overdue = active.filter((item) => dayjs(item.remindAt).isBefore(now));
+      const active = reminders.filter((item) => !item.completed || item.repeat !== 'none');
+      const overdue = active.filter((item) => getReminderDueAt(item, now).isBefore(now));
       const todayUpcoming = active.filter((item) => {
-        const at = dayjs(item.remindAt);
+        const at = getReminderDueAt(item, now);
         return at.isAfter(now) && at.diff(now, 'hour', true) <= 24;
       });
-      const next = active.filter((item) => dayjs(item.remindAt).isAfter(now));
+      const next = active.filter((item) => getReminderDueAt(item, now).isAfter(now));
       setReminderHighlights([...overdue, ...todayUpcoming, ...next].slice(0, 2));
     };
 
@@ -282,7 +287,8 @@ export default function Home() {
             </div>
             <div className="reminder-highlight-list">
               {reminderHighlights.map((item) => {
-                const isOverdue = dayjs(item.remindAt).isBefore(dayjs());
+                const dueAt = getReminderDueAt(item);
+                const isOverdue = dueAt.isBefore(dayjs());
                 return (
                   <div
                     key={item.id}
@@ -295,9 +301,18 @@ export default function Home() {
                     <div className="reminder-highlight-info">
                       <div className="reminder-highlight-title">{item.title}</div>
                       <div className="reminder-highlight-meta">
-                        {isOverdue ? '已过时间' : dayjs(item.remindAt).format('今天 HH:mm')}
+                        {isOverdue
+                          ? `已过时间 · ${dueAt.format('M月D日 HH:mm')}`
+                          : dueAt.isSame(dayjs(), 'day')
+                            ? `今天 ${dueAt.format('HH:mm')}`
+                            : dueAt.isSame(dayjs().add(1, 'day'), 'day')
+                              ? `明天 ${dueAt.format('HH:mm')}`
+                              : dueAt.format('M月D日 HH:mm')}
                         <span className={`reminder-highlight-badge ${item.level}`}>
                           {item.level === 'urgent' ? '紧急' : item.level === 'important' ? '重要' : '普通'}
+                        </span>
+                        <span className="reminder-highlight-badge repeat">
+                          {getReminderRepeatLabel(item.repeat)}
                         </span>
                       </div>
                     </div>

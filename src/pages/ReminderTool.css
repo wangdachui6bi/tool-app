@@ -63,6 +63,17 @@
   gap: 12px;
 }
 
+.reminder-group {
+  display: grid;
+  gap: 10px;
+}
+
+.reminder-group-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
 .reminder-input,
 .reminder-textarea {
   width: 100%;
@@ -84,6 +95,12 @@
   gap: 10px;
 }
 
+.reminder-repeat-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
 .reminder-level-btn {
   padding: 12px;
   border-radius: 16px;
@@ -102,6 +119,31 @@
   font-size: 12px;
 }
 
+.reminder-repeat-btn {
+  padding: 12px;
+  border-radius: 16px;
+  text-align: left;
+  background: var(--bg);
+  color: var(--text-secondary);
+  border: 1px solid transparent;
+}
+
+.reminder-repeat-btn strong {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.reminder-repeat-btn span {
+  font-size: 12px;
+}
+
+.reminder-repeat-btn.active {
+  background: linear-gradient(135deg, #fff1f2, #fff7ed);
+  color: #be123c;
+  border-color: rgba(239, 68, 68, 0.16);
+}
+
 .reminder-level-btn.active.normal {
   background: #eff6ff;
   color: #2563eb;
@@ -118,7 +160,7 @@
 }
 
 .reminder-save-btn {
-  width: 100%;
+  flex: 1;
   padding: 14px 18px;
   border-radius: 16px;
   background: linear-gradient(135deg, #ef4444, #f97316);
@@ -129,6 +171,49 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
+}
+
+.reminder-action-row {
+  display: flex;
+  gap: 10px;
+}
+
+.reminder-secondary-btn {
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.reminder-feedback {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.reminder-feedback.info {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.reminder-feedback.success {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.reminder-feedback.warn {
+  background: #fff7ed;
+  color: #c2410c;
 }
 
 .reminder-section {
@@ -208,6 +293,14 @@
   color: #be123c;
 }
 
+.reminder-repeat-badge {
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-weight: 700;
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
 .reminder-card-note {
   margin-top: 10px;
   font-size: 14px;
@@ -250,7 +343,12 @@
 }
 
 @media (max-width: 720px) {
-  .reminder-level-row {
+  .reminder-level-row,
+  .reminder-repeat-row {
     grid-template-columns: 1fr;
+  }
+
+  .reminder-action-row {
+    flex-direction: column;
   }
 }
