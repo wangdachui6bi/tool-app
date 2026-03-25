@@ -1,0 +1,256 @@
+.reminder-content {
+  padding: 0 16px 24px;
+}
+
+.reminder-hero {
+  padding: 20px;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at top right, rgba(239, 68, 68, 0.18), transparent 28%),
+    linear-gradient(135deg, #fff1f2, #fff7ed);
+  box-shadow: var(--shadow-lg);
+  margin-bottom: 16px;
+}
+
+.reminder-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #be123c;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.reminder-hero h1 {
+  font-size: 24px;
+  line-height: 1.2;
+  margin-bottom: 8px;
+  color: #1f2937;
+}
+
+.reminder-hero p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #6b7280;
+}
+
+.reminder-panel,
+.reminder-card {
+  background: var(--card);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+}
+
+.reminder-panel {
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.reminder-panel-title,
+.reminder-section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.reminder-form {
+  display: grid;
+  gap: 12px;
+}
+
+.reminder-input,
+.reminder-textarea {
+  width: 100%;
+  padding: 14px;
+  background: var(--bg);
+  border-radius: 16px;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.reminder-textarea {
+  min-height: 92px;
+  resize: vertical;
+}
+
+.reminder-level-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.reminder-level-btn {
+  padding: 12px;
+  border-radius: 16px;
+  text-align: left;
+  background: var(--bg);
+  color: var(--text-secondary);
+}
+
+.reminder-level-btn strong {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.reminder-level-btn span {
+  font-size: 12px;
+}
+
+.reminder-level-btn.active.normal {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.reminder-level-btn.active.important {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.reminder-level-btn.active.urgent {
+  background: #fff1f2;
+  color: #be123c;
+}
+
+.reminder-save-btn {
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ef4444, #f97316);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.reminder-section {
+  margin-bottom: 16px;
+}
+
+.reminder-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reminder-section-title.urgent {
+  color: #be123c;
+}
+
+.reminder-card {
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid transparent;
+}
+
+.reminder-card.level-normal {
+  border-color: rgba(37, 99, 235, 0.12);
+}
+
+.reminder-card.level-important {
+  border-color: rgba(194, 65, 12, 0.12);
+}
+
+.reminder-card.level-urgent {
+  border-color: rgba(190, 18, 60, 0.16);
+  box-shadow: 0 12px 28px rgba(190, 18, 60, 0.12);
+}
+
+.reminder-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.reminder-card-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.reminder-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.reminder-badge {
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.reminder-badge.normal {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.reminder-badge.important {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.reminder-badge.urgent {
+  background: #fff1f2;
+  color: #be123c;
+}
+
+.reminder-card-note {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.reminder-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reminder-icon-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reminder-icon-btn.done {
+  color: #059669;
+}
+
+.reminder-icon-btn.danger {
+  color: #be123c;
+}
+
+.reminder-empty {
+  padding: 18px;
+  background: var(--card);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+@media (max-width: 720px) {
+  .reminder-level-row {
+    grid-template-columns: 1fr;
+  }
+}

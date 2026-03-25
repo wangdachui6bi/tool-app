@@ -5,7 +5,7 @@ import {
   CheckSquare, CalendarClock, ListTodo,
   Droplets, Timer, Receipt, Dices,
   Scale, Calculator, QrCode, RulerIcon, LineChart,
-  ShieldPlus,
+  ShieldPlus, BellRing, CircleAlert, Compass,
   Settings2, X, Check, GripVertical,
   ChevronUp, ChevronDown,
 } from 'lucide-react';
@@ -14,6 +14,7 @@ import { getAllEvents } from '../stores/eventStore';
 import { getCountdowns } from '../stores/countdownStore';
 import { getQuickToolIds, saveQuickToolIds } from '../stores/quickToolStore';
 import { getSkinCareRecordByDate } from '../stores/skinCareStore';
+import { getReminders, type ReminderItem } from '../stores/reminderStore';
 import { sortByCountdown, getEventTypeIcon, getYearLabel } from '../utils/dateHelpers';
 import './Home.css';
 
@@ -48,6 +49,7 @@ const ALL_TOOLS: ToolDef[] = [
   { id: 'random', name: '随机决策', icon: Dices, color: '#A855F7', path: '/tool/random' },
   { id: 'weight', name: '体重记录', icon: Scale, color: '#EC4899', path: '/tool/weight' },
   { id: 'bmi', name: 'BMI计算', icon: Calculator, color: '#14B8A6', path: '/tool/bmi' },
+  { id: 'reminder', name: '提醒', icon: BellRing, color: '#EF4444', path: '/tool/reminder' },
   { id: 'skin', name: '皮肤护理', icon: ShieldPlus, color: '#F59E0B', path: '/tool/skin' },
   { id: 'qrcode', name: '二维码', icon: QrCode, color: '#1E293B', path: '/tool/qrcode' },
   { id: 'ruler', name: '尺子', icon: RulerIcon, color: '#64748B', path: '/tool/ruler' },
@@ -61,6 +63,7 @@ export default function Home() {
   const [showEditor, setShowEditor] = useState(false);
   const [editIds, setEditIds] = useState<string[]>([]);
   const [skinPending, setSkinPending] = useState(false);
+  const [reminderHighlights, setReminderHighlights] = useState<ReminderItem[]>([]);
 
   const loadData = useCallback(async () => {
     const items: UpcomingItem[] = [];
@@ -139,6 +142,25 @@ export default function Home() {
     };
 
     loadSkinReminder();
+  }, []);
+
+  useEffect(() => {
+    const loadReminderHighlights = async () => {
+      const now = dayjs();
+      const reminders = await getReminders();
+      const active = reminders.filter((item) => !item.completed);
+      const overdue = active.filter((item) => dayjs(item.remindAt).isBefore(now));
+      const todayUpcoming = active.filter((item) => {
+        const at = dayjs(item.remindAt);
+        return at.isAfter(now) && at.diff(now, 'hour', true) <= 24;
+      });
+      const next = active.filter((item) => dayjs(item.remindAt).isAfter(now));
+      setReminderHighlights([...overdue, ...todayUpcoming, ...next].slice(0, 2));
+    };
+
+    loadReminderHighlights();
+    window.addEventListener('reminderUpdated', loadReminderHighlights);
+    return () => window.removeEventListener('reminderUpdated', loadReminderHighlights);
   }, []);
 
   const quickTools = quickIds
@@ -224,14 +246,67 @@ export default function Home() {
         <div className="home-header">
           <div className="home-header-bg" />
           <div className="home-header-content">
-            <div className="home-greeting">
-              {getGreeting()}
+            <div className="home-eyebrow">TOOL APP</div>
+            <div className="home-greeting">{getGreeting()}</div>
+            <div className="home-lead">把提醒、纪念日和常用工具收进一个更安静但更锋利的工作台。</div>
+            <div className="home-meta-row">
+              <div className="home-date">
+                {today.format('YYYY年M月D日')} {getWeekDay(today.day())}
+              </div>
+              <div className="home-inline-chip">
+                <Compass size={14} />
+                {quickTools.length} 个常用入口
+              </div>
             </div>
-            <div className="home-date">
-              {today.format('YYYY年M月D日')} {getWeekDay(today.day())}
+            <div className="home-hero-actions">
+              <button className="home-hero-btn primary" onClick={() => navigate('/toolbox')}>
+                全部工具
+              </button>
+              <button className="home-hero-btn" onClick={() => navigate('/tool/reminder')}>
+                我的提醒
+              </button>
             </div>
           </div>
         </div>
+
+        {reminderHighlights.length > 0 && (
+          <div className="home-section fade-in">
+            <div className="section-header">
+              <div className="section-title">
+                <BellRing size={18} />
+                <span>提醒你</span>
+              </div>
+              <button className="section-more" onClick={() => navigate('/tool/reminder')}>
+                去处理 <ChevronRight size={16} />
+              </button>
+            </div>
+            <div className="reminder-highlight-list">
+              {reminderHighlights.map((item) => {
+                const isOverdue = dayjs(item.remindAt).isBefore(dayjs());
+                return (
+                  <div
+                    key={item.id}
+                    className={`reminder-highlight-card ${isOverdue ? 'overdue' : item.level}`}
+                    onClick={() => navigate('/tool/reminder')}
+                  >
+                    <div className="reminder-highlight-icon">
+                      {isOverdue ? <CircleAlert size={20} /> : <BellRing size={20} />}
+                    </div>
+                    <div className="reminder-highlight-info">
+                      <div className="reminder-highlight-title">{item.title}</div>
+                      <div className="reminder-highlight-meta">
+                        {isOverdue ? '已过时间' : dayjs(item.remindAt).format('今天 HH:mm')}
+                        <span className={`reminder-highlight-badge ${item.level}`}>
+                          {item.level === 'urgent' ? '紧急' : item.level === 'important' ? '重要' : '普通'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {upcoming.length > 0 && (
           <div className="home-section fade-in">
@@ -280,10 +355,10 @@ export default function Home() {
         )}
 
         <div className="home-section fade-in">
-          <div className="section-header">
-            <div className="section-title">
-              <span>常用工具</span>
-            </div>
+            <div className="section-header">
+              <div className="section-title">
+                <span>常用工具</span>
+              </div>
             <div className="section-header-actions">
               <button className="section-edit-btn" onClick={openEditor}>
                 <Settings2 size={16} />
@@ -307,6 +382,7 @@ export default function Home() {
                       <Icon size={22} />
                     </div>
                     {tool.id === 'skin' && skinPending && <span className="quick-badge">1</span>}
+                    {tool.id === 'reminder' && reminderHighlights.length > 0 && <span className="quick-badge">{reminderHighlights.length}</span>}
                   </div>
                   <span className="quick-name">{tool.name}</span>
                 </div>

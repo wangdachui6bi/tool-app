@@ -22,6 +22,7 @@ import Ruler from './pages/Ruler';
 import QrCode from './pages/QrCode';
 import StockAssistant from './pages/StockAssistant';
 import SkinCareAssistant from './pages/SkinCareAssistant';
+import ReminderTool from './pages/ReminderTool';
 
 const HIDE_TAB_PATHS = ['/anniversary/add', '/anniversary/edit', '/event', '/tool'];
 
@@ -77,6 +78,7 @@ function AppLayout() {
         <Route path="/tool/qrcode" element={<QrCode />} />
         <Route path="/tool/stock" element={<StockAssistant />} />
         <Route path="/tool/skin" element={<SkinCareAssistant />} />
+        <Route path="/tool/reminder" element={<ReminderTool />} />
       </Routes>
       {showTab && <TabBar />}
     </>

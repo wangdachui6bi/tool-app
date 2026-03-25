@@ -1,50 +1,64 @@
 .profile-header {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 48px 20px 24px;
+  align-items: flex-start;
+  padding: 26px 20px 24px;
 }
 
 .profile-icon-wrap {
-  width: 72px;
-  height: 72px;
-  border-radius: 20px;
-  background: var(--primary-light);
+  width: 82px;
+  height: 82px;
+  border-radius: 26px;
+  background: linear-gradient(135deg, var(--primary-light), #fff8f3);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
 }
 
 .profile-app-name {
-  font-size: 22px;
+  font-family: var(--font-display);
+  font-size: 34px;
+  line-height: 1;
   font-weight: 700;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
+  letter-spacing: -0.05em;
 }
 
 .profile-version {
-  font-size: 13px;
-  color: var(--text-light);
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 252, 247, 0.78);
+  font-size: 12px;
+  color: var(--text-secondary);
+  box-shadow: var(--shadow);
 }
 
 .profile-section {
   padding: 0 16px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .profile-section-title {
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: var(--text-secondary);
   padding: 0 4px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .profile-card {
   background: var(--card);
-  border-radius: var(--radius);
+  border-radius: 24px;
   box-shadow: var(--shadow);
   overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.64);
+  backdrop-filter: blur(14px);
 }
 
 .profile-item {
@@ -52,7 +66,7 @@
   align-items: center;
   gap: 12px;
   width: 100%;
-  padding: 16px;
+  padding: 18px 16px;
   text-align: left;
   border-bottom: 1px solid var(--border);
   transition: background 0.15s;
@@ -78,7 +92,7 @@
 .profile-item-label {
   flex: 1;
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 700;
 }
 
 .profile-item.danger .profile-item-label {
@@ -155,7 +169,7 @@
 .confirm-update {
   flex: 1;
   padding: 12px;
-  border-radius: 10px;
+  border-radius: 14px;
   font-size: 15px;
   font-weight: 600;
   background: var(--primary);

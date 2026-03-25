@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   CalendarHeart, CheckSquare, CalendarClock, ListTodo, Dices,
   Droplets, Scale, Calculator,
-  Timer, QrCode, LineChart, ShieldPlus,
+  Timer, QrCode, LineChart, ShieldPlus, BellRing,
   Receipt, RulerIcon,
 } from 'lucide-react';
 import './Toolbox.css';
@@ -29,6 +29,7 @@ const CATEGORIES: ToolCategory[] = [
       { id: 'habit', name: '习惯打卡', desc: '每日习惯追踪', icon: CheckSquare, color: '#10B981', path: '/tool/habit' },
       { id: 'countdown', name: '倒数日', desc: '重要日子倒计时', icon: CalendarClock, color: '#F59E0B', path: '/tool/countdown' },
       { id: 'todo', name: '待办清单', desc: '任务管理', icon: ListTodo, color: '#8B5CF6', path: '/tool/todo' },
+      { id: 'reminder', name: '提醒工具', desc: '到点强提醒', icon: BellRing, color: '#EF4444', path: '/tool/reminder' },
       { id: 'random', name: '随机决策', desc: '选择困难症救星', icon: Dices, color: '#A855F7', path: '/tool/random' },
     ],
   },
@@ -66,7 +67,9 @@ export default function Toolbox() {
       <div className="page-content">
         <div className="toolbox-header">
           <h1 className="toolbox-title">工具箱</h1>
-          <p className="toolbox-subtitle">{CATEGORIES.reduce((s, c) => s + c.tools.length, 0)} 个工具</p>
+          <p className="toolbox-subtitle">
+            {CATEGORIES.reduce((s, c) => s + c.tools.length, 0)} 个工具，按日常、健康、效率与计算整理。
+          </p>
         </div>
 
         {CATEGORIES.map(cat => (
