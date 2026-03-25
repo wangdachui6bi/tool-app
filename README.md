@@ -108,6 +108,24 @@ npm run cap:sync
 npm run cap:open
 ```
 
+### 待办云同步配置
+
+如果你想把待办清单同步到自己的 `common-server`，请在 `tool-app` 本地配置以下环境变量：
+
+```bash
+VITE_UPDATE_SERVER_URL=https://your-domain.com
+VITE_SYNC_SERVER_URL=https://your-domain.com
+VITE_TODO_SYNC_TOKEN=your-sync-token
+```
+
+说明：
+
+- `VITE_SYNC_SERVER_URL` 不填时，会默认复用 `VITE_UPDATE_SERVER_URL`
+- `VITE_TODO_SYNC_TOKEN` 需要和 `common-server` 的 `SYNC_API_TOKEN` 保持一致
+- 第一次打开待办页时，旧的本地待办会自动导入到服务端数据库
+- 之后新增、完成、删除待办都会直接调用 `common-server` 的待办接口
+- 其他项目只要接同一个 `common-server` 和 `SYNC_API_TOKEN`，看到的就是同一份待办数据
+
 ## 项目结构
 
 ```

@@ -1,7 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, X, Send, ClipboardList } from 'lucide-react';
-import { getTodos, addTodo, toggleTodo, deleteTodo, clearCompleted } from '../stores/todoStore';
+import { ArrowLeft, X, Send, ClipboardList, Cloud, RefreshCw } from 'lucide-react';
+import {
+  getTodoSyncConfig,
+  getTodos,
+  addTodo,
+  toggleTodo,
+  deleteTodo,
+  clearCompleted,
+  refreshTodos,
+} from '../stores/todoStore';
 import { generateId } from '../stores/eventStore';
 import type { TodoItem } from '../types';
 import './TodoList.css';
@@ -13,6 +21,14 @@ export default function TodoList() {
   const [todos, setTodos] = useState<TodoItem[]>([]);
   const [input, setInput] = useState('');
   const [filter, setFilter] = useState<Filter>('all');
+  const [syncing, setSyncing] = useState(false);
+  const [syncMessage, setSyncMessage] = useState(
+    getTodoSyncConfig().enabled
+      ? '待办会自动同步到云端'
+      : '云同步未配置，当前仅保存在本机'
+  );
+
+  const syncConfig = getTodoSyncConfig();
 
   const loadData = useCallback(async () => {
     const list = await getTodos();
@@ -21,35 +37,99 @@ export default function TodoList() {
 
   useEffect(() => {
     loadData();
+    const handler = () => loadData();
+    window.addEventListener('todoUpdated', handler);
+    return () => window.removeEventListener('todoUpdated', handler);
   }, [loadData]);
+
+  const runSync = useCallback(async (silent = false) => {
+    if (!syncConfig.enabled) {
+      if (!silent) {
+        setSyncMessage('云同步未配置，当前仅保存在本机');
+      }
+      return;
+    }
+
+    try {
+      setSyncing(true);
+      if (!silent) {
+        setSyncMessage('正在同步到云端...');
+      }
+      const result = await refreshTodos();
+      setSyncMessage(result.message);
+      await loadData();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : '同步失败，请稍后再试';
+      setSyncMessage(message);
+    } finally {
+      setSyncing(false);
+    }
+  }, [loadData, syncConfig.enabled]);
+
+  useEffect(() => {
+    if (syncConfig.enabled) {
+      runSync(true);
+    }
+  }, [runSync, syncConfig.enabled]);
 
   const handleAdd = async () => {
     const text = input.trim();
     if (!text) return;
+    const now = new Date().toISOString();
     const item: TodoItem = {
       id: generateId(),
       text,
       completed: false,
-      createdAt: new Date().toISOString(),
+      createdAt: now,
+      updatedAt: now,
+      deletedAt: null,
     };
-    await addTodo(item);
-    setInput('');
-    loadData();
+    try {
+      await addTodo(item);
+      setInput('');
+      await loadData();
+      if (syncConfig.enabled) {
+        setSyncMessage('已添加到云端待办');
+      }
+    } catch (error) {
+      setSyncMessage(error instanceof Error ? error.message : '新增待办失败');
+    }
   };
 
   const handleToggle = async (id: string) => {
-    await toggleTodo(id);
-    loadData();
+    try {
+      await toggleTodo(id);
+      await loadData();
+      if (syncConfig.enabled) {
+        setSyncMessage('云端待办状态已更新');
+      }
+    } catch (error) {
+      setSyncMessage(error instanceof Error ? error.message : '更新待办失败');
+    }
   };
 
   const handleDelete = async (id: string) => {
-    await deleteTodo(id);
-    loadData();
+    try {
+      await deleteTodo(id);
+      await loadData();
+      if (syncConfig.enabled) {
+        setSyncMessage('待办已从云端删除');
+      }
+    } catch (error) {
+      setSyncMessage(error instanceof Error ? error.message : '删除待办失败');
+    }
   };
 
   const handleClearCompleted = async () => {
-    await clearCompleted();
-    loadData();
+    try {
+      await clearCompleted();
+      await loadData();
+      if (syncConfig.enabled) {
+        setSyncMessage('已清除云端已完成待办');
+      }
+    } catch (error) {
+      setSyncMessage(error instanceof Error ? error.message : '清除失败');
+    }
   };
 
   const filtered = todos.filter(t => {
@@ -77,6 +157,28 @@ export default function TodoList() {
       </div>
 
       <div className="page-content no-tab todo-content">
+        <div className="todo-sync-bar fade-in">
+          <div className="todo-sync-copy">
+            <Cloud size={18} />
+            <div>
+              <div className="todo-sync-title">
+                {syncConfig.enabled ? '云端待办由服务端统一管理' : '当前使用本地待办'}
+              </div>
+              <div className="todo-sync-desc">
+                {syncConfig.enabled
+                  ? syncMessage
+                  : '配置服务地址和同步 token 后，可在其他项目里同步查看'}
+              </div>
+            </div>
+          </div>
+          {syncConfig.enabled && (
+            <button className="todo-sync-btn" onClick={() => runSync()} disabled={syncing}>
+              <RefreshCw size={16} className={syncing ? 'spinning' : ''} />
+              {syncing ? '同步中' : '立即同步'}
+            </button>
+          )}
+        </div>
+
         <div className="todo-input-bar fade-in">
           <input
             className="todo-input"
