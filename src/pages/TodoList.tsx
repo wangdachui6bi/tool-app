@@ -17,11 +17,30 @@ import './TodoList.css';
 
 type Filter = 'all' | 'active' | 'completed';
 
+function getTodayValue() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function formatTodoSchedule(item: TodoItem) {
+  if (!item.date) return '未设置日期';
+  if (item.time) return `${item.date} ${item.time}`;
+  return `${item.date} 全天`;
+}
+
+function getScheduleTimestamp(item: TodoItem) {
+  if (!item.date) return Number.MAX_SAFE_INTEGER;
+  const value = item.time ? `${item.date}T${item.time}:00` : `${item.date}T23:59:59`;
+  const timestamp = new Date(value).getTime();
+  return Number.isNaN(timestamp) ? Number.MAX_SAFE_INTEGER : timestamp;
+}
+
 export default function TodoList() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [todos, setTodos] = useState<TodoItem[]>([]);
   const [input, setInput] = useState('');
+  const [todoDate, setTodoDate] = useState(getTodayValue());
+  const [todoTime, setTodoTime] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [filter, setFilter] = useState<Filter>('all');
   const [syncing, setSyncing] = useState(false);
@@ -41,6 +60,8 @@ export default function TodoList() {
   const clearEditState = useCallback((keepMessage = false) => {
     setEditingId(null);
     setInput('');
+    setTodoDate(getTodayValue());
+    setTodoTime('');
     if (!keepMessage) {
       setSyncMessage(
         syncConfig.enabled
@@ -59,6 +80,8 @@ export default function TodoList() {
   const openEditState = useCallback((item: TodoItem, syncUrl = true) => {
     setEditingId(item.id);
     setInput(item.text);
+    setTodoDate(item.date || item.createdAt.slice(0, 10) || getTodayValue());
+    setTodoTime(item.time || '');
     setFilter('all');
 
     if (syncUrl && searchParams.get('edit') !== item.id) {
@@ -82,9 +105,16 @@ export default function TodoList() {
     const target = todos.find((item) => item.id === editId);
     if (!target) return;
 
-    if (editingId === target.id && input === target.text) return;
+    if (
+      editingId === target.id &&
+      input === target.text &&
+      todoDate === (target.date || target.createdAt.slice(0, 10)) &&
+      todoTime === (target.time || '')
+    ) {
+      return;
+    }
     openEditState(target, false);
-  }, [editingId, input, openEditState, searchParams, todos]);
+  }, [editingId, input, openEditState, searchParams, todoDate, todoTime, todos]);
 
   const runSync = useCallback(async (silent = false) => {
     if (!syncConfig.enabled) {
@@ -122,7 +152,11 @@ export default function TodoList() {
 
     try {
       if (editingId) {
-        await updateTodo(editingId, text);
+        await updateTodo(editingId, {
+          text,
+          date: todoDate || getTodayValue(),
+          time: todoTime,
+        });
         if (syncConfig.enabled) {
           setSyncMessage('云端待办内容已更新');
         }
@@ -133,12 +167,16 @@ export default function TodoList() {
           id: generateId(),
           text,
           completed: false,
+          date: todoDate || now.slice(0, 10),
+          time: todoTime,
           createdAt: now,
           updatedAt: now,
           deletedAt: null,
         };
         await addTodo(item);
         setInput('');
+        setTodoDate(getTodayValue());
+        setTodoTime('');
         if (syncConfig.enabled) {
           setSyncMessage('已添加到云端待办');
         }
@@ -197,7 +235,9 @@ export default function TodoList() {
 
   const sorted = [...filtered].sort((a, b) => {
     if (a.completed !== b.completed) return a.completed ? 1 : -1;
-    return 0;
+    const scheduleDiff = getScheduleTimestamp(a) - getScheduleTimestamp(b);
+    if (scheduleDiff !== 0) return scheduleDiff;
+    return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
   });
 
   const activeCount = todos.filter(t => !t.completed).length;
@@ -237,30 +277,52 @@ export default function TodoList() {
         </div>
 
         <div className="todo-input-bar fade-in">
-          <input
-            className="todo-input"
-            placeholder={editingId ? '修改待办内容...' : '添加待办...'}
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && handleSubmit()}
-          />
-          <button
-            className="todo-add-btn"
-            onClick={handleSubmit}
-            disabled={!input.trim()}
-            title={editingId ? '保存修改' : '新增待办'}
-          >
-            {editingId ? <Pencil size={20} /> : <Send size={20} />}
-          </button>
-          {editingId && (
+          <div className="todo-input-main">
+            <input
+              className="todo-input"
+              placeholder={editingId ? '修改待办内容...' : '添加待办...'}
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleSubmit()}
+            />
             <button
-              className="todo-cancel-btn"
-              onClick={() => clearEditState()}
-              title="取消编辑"
+              className="todo-add-btn"
+              onClick={handleSubmit}
+              disabled={!input.trim()}
+              title={editingId ? '保存修改' : '新增待办'}
             >
-              <RotateCcw size={18} />
+              {editingId ? <Pencil size={20} /> : <Send size={20} />}
             </button>
-          )}
+            {editingId && (
+              <button
+                className="todo-cancel-btn"
+                onClick={() => clearEditState()}
+                title="取消编辑"
+              >
+                <RotateCcw size={18} />
+              </button>
+            )}
+          </div>
+          <div className="todo-schedule-row">
+            <label className="todo-schedule-field">
+              <span className="todo-schedule-label">日期</span>
+              <input
+                className="todo-schedule-input"
+                type="date"
+                value={todoDate}
+                onChange={e => setTodoDate(e.target.value)}
+              />
+            </label>
+            <label className="todo-schedule-field">
+              <span className="todo-schedule-label">时间</span>
+              <input
+                className="todo-schedule-input"
+                type="time"
+                value={todoTime}
+                onChange={e => setTodoTime(e.target.value)}
+              />
+            </label>
+          </div>
         </div>
 
         <div className="todo-filters fade-in">
@@ -306,7 +368,10 @@ export default function TodoList() {
                 >
                   {item.completed && <span className="todo-checkmark">✓</span>}
                 </button>
-                <span className="todo-text">{item.text}</span>
+                <div className="todo-body">
+                  <span className="todo-text">{item.text}</span>
+                  <span className="todo-meta">{formatTodoSchedule(item)}</span>
+                </div>
                 <button
                   className="todo-edit"
                   onClick={() => openEditState(item)}

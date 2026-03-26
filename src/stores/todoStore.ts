@@ -6,8 +6,15 @@ const CLOUD_MIGRATION_KEY = 'todo_items_cloud_migrated_v2';
 const TODO_SYNC_SERVER = import.meta.env.VITE_SYNC_SERVER_URL || import.meta.env.VITE_UPDATE_SERVER_URL || '';
 const TODO_SYNC_TOKEN = import.meta.env.VITE_TODO_SYNC_TOKEN || '';
 
+interface ServerTodoItem extends TodoItem {
+  meta?: {
+    date?: string;
+    time?: string;
+  } | null;
+}
+
 interface TodoListResponse {
-  items: TodoItem[];
+  items: ServerTodoItem[];
   total: number;
   serverTime: string;
 }
@@ -22,9 +29,35 @@ function normalizeTodo(item: TodoItem): TodoItem {
   const createdAt = item.createdAt || new Date().toISOString();
   return {
     ...item,
+    date: item.date || createdAt.slice(0, 10),
+    time: item.time || '',
     createdAt,
     updatedAt: item.updatedAt || createdAt,
     deletedAt: item.deletedAt || null,
+  };
+}
+
+function fromServerTodo(item: ServerTodoItem): TodoItem {
+  return normalizeTodo({
+    ...item,
+    date: item.meta?.date || item.date || item.createdAt?.slice(0, 10),
+    time: item.meta?.time || item.time || '',
+  });
+}
+
+function toServerTodoPayload(item: TodoItem) {
+  const normalized = normalizeTodo(item);
+  return {
+    id: normalized.id,
+    text: normalized.text,
+    completed: normalized.completed,
+    createdAt: normalized.createdAt,
+    updatedAt: normalized.updatedAt,
+    deletedAt: normalized.deletedAt || null,
+    meta: {
+      date: normalized.date,
+      time: normalized.time || '',
+    },
   };
 }
 
@@ -50,7 +83,7 @@ async function saveStoredTodos(list: TodoItem[]): Promise<void> {
 }
 
 async function saveServerTodos(items: TodoItem[]): Promise<TodoItem[]> {
-  const normalized = (items || []).map(normalizeTodo);
+  const normalized = (items || []).map(fromServerTodo);
   await saveStoredTodos(normalized);
   return normalized;
 }
@@ -89,10 +122,7 @@ async function ensureCloudImported(): Promise<void> {
     method: 'POST',
     body: JSON.stringify({
       sourceApp: 'tool-app',
-      items: localItems.map((item) => ({
-        ...item,
-        deletedAt: item.deletedAt || null,
-      })),
+      items: localItems.map((item) => toServerTodoPayload(item)),
     }),
   });
 
@@ -148,10 +178,7 @@ export async function addTodo(item: TodoItem): Promise<void> {
   const data = await requestTodoList('/api/sync/todos', {
     method: 'POST',
     body: JSON.stringify({
-      id: item.id,
-      text: item.text,
-      completed: item.completed,
-      createdAt: item.createdAt,
+      ...toServerTodoPayload(item),
       sourceApp: 'tool-app',
     }),
   });
@@ -159,8 +186,8 @@ export async function addTodo(item: TodoItem): Promise<void> {
   await saveServerTodos(data.items || []);
 }
 
-export async function updateTodo(id: string, text: string): Promise<void> {
-  const nextText = text.trim();
+export async function updateTodo(id: string, patch: Pick<TodoItem, 'text' | 'date' | 'time'>): Promise<void> {
+  const nextText = patch.text.trim();
   if (!nextText) {
     throw new Error('待办内容不能为空');
   }
@@ -173,16 +200,28 @@ export async function updateTodo(id: string, text: string): Promise<void> {
     }
 
     item.text = nextText;
+    item.date = patch.date || item.date || item.createdAt.slice(0, 10);
+    item.time = patch.time || '';
     item.updatedAt = new Date().toISOString();
     await saveStoredTodos(list);
     return;
   }
 
   await ensureCloudImported();
+  const list = await getStoredTodos();
+  const item = list.find((todo) => todo.id === id && !todo.deletedAt);
+  if (!item) {
+    throw new Error('待办不存在，无法更新');
+  }
+
   const data = await requestTodoList(`/api/sync/todos/${encodeURIComponent(id)}`, {
     method: 'PATCH',
     body: JSON.stringify({
       text: nextText,
+      meta: {
+        date: patch.date || item.date || item.createdAt.slice(0, 10),
+        time: patch.time || '',
+      },
       sourceApp: 'tool-app',
     }),
   });

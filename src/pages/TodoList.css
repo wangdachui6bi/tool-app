@@ -58,13 +58,19 @@
 
 .todo-input-bar {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0 16px 16px;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
   margin: 0 16px 12px;
   background: var(--card);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
+}
+
+.todo-input-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .todo-input {
@@ -110,6 +116,34 @@
   color: var(--text-secondary);
   background: var(--bg);
   border-radius: var(--radius-sm);
+}
+
+.todo-schedule-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.todo-schedule-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.todo-schedule-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.todo-schedule-input {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 14px;
 }
 
 .todo-filters {
@@ -169,6 +203,10 @@
   color: var(--text-light);
 }
 
+.todo-item.completed .todo-meta {
+  color: rgba(148, 163, 184, 0.9);
+}
+
 .todo-checkbox {
   width: 24px;
   height: 24px;
@@ -192,12 +230,23 @@
   color: #fff;
 }
 
-.todo-text {
+.todo-body {
   flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.todo-text {
   font-size: 15px;
   color: var(--text);
-  min-width: 0;
   word-break: break-word;
+}
+
+.todo-meta {
+  font-size: 12px;
+  color: var(--text-secondary);
 }
 
 .todo-delete {
@@ -287,5 +336,11 @@
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 420px) {
+  .todo-schedule-row {
+    grid-template-columns: 1fr;
   }
 }

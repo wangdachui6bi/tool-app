@@ -58,6 +58,8 @@ export interface TodoItem {
   id: string;
   text: string;
   completed: boolean;
+  date?: string;
+  time?: string;
   createdAt: string;
   updatedAt: string;
   deletedAt?: string | null;
