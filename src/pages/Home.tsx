@@ -14,6 +14,7 @@ import { getAllEvents } from '../stores/eventStore';
 import { getCountdowns } from '../stores/countdownStore';
 import { getQuickToolIds, saveQuickToolIds } from '../stores/quickToolStore';
 import { getSkinCareRecordByDate } from '../stores/skinCareStore';
+import { getTodos } from '../stores/todoStore';
 import {
   getReminderDueAt,
   getReminderRepeatLabel,
@@ -69,6 +70,7 @@ export default function Home() {
   const [editIds, setEditIds] = useState<string[]>([]);
   const [skinPending, setSkinPending] = useState(false);
   const [reminderHighlights, setReminderHighlights] = useState<ReminderItem[]>([]);
+  const [todoHighlights, setTodoHighlights] = useState<{ id: string; text: string; completed: boolean }[]>([]);
 
   const loadData = useCallback(async () => {
     const items: UpcomingItem[] = [];
@@ -147,6 +149,22 @@ export default function Home() {
     };
 
     loadSkinReminder();
+  }, []);
+
+  useEffect(() => {
+    const loadTodoHighlights = async () => {
+      const todos = await getTodos();
+      const active = todos.filter((item) => !item.completed).slice(0, 3);
+      setTodoHighlights(active.map((item) => ({
+        id: item.id,
+        text: item.text,
+        completed: item.completed,
+      })));
+    };
+
+    loadTodoHighlights();
+    window.addEventListener('todoUpdated', loadTodoHighlights);
+    return () => window.removeEventListener('todoUpdated', loadTodoHighlights);
   }, []);
 
   useEffect(() => {
@@ -293,7 +311,7 @@ export default function Home() {
                   <div
                     key={item.id}
                     className={`reminder-highlight-card ${isOverdue ? 'overdue' : item.level}`}
-                    onClick={() => navigate('/tool/reminder')}
+                    onClick={() => navigate(`/tool/reminder?edit=${encodeURIComponent(item.id)}`)}
                   >
                     <div className="reminder-highlight-icon">
                       {isOverdue ? <CircleAlert size={20} /> : <BellRing size={20} />}
@@ -319,6 +337,35 @@ export default function Home() {
                   </div>
                 );
               })}
+            </div>
+          </div>
+        )}
+
+        {todoHighlights.length > 0 && (
+          <div className="home-section fade-in">
+            <div className="section-header">
+              <div className="section-title">
+                <ListTodo size={18} />
+                <span>待办一下</span>
+              </div>
+              <button className="section-more" onClick={() => navigate('/tool/todo')}>
+                去处理 <ChevronRight size={16} />
+              </button>
+            </div>
+            <div className="todo-highlight-list">
+              {todoHighlights.map((item, index) => (
+                <div
+                  key={item.id}
+                  className="todo-highlight-card"
+                  onClick={() => navigate(`/tool/todo?edit=${encodeURIComponent(item.id)}`)}
+                >
+                  <div className="todo-highlight-index">{index + 1}</div>
+                  <div className="todo-highlight-info">
+                    <div className="todo-highlight-title">{item.text}</div>
+                    <div className="todo-highlight-meta">点开直接编辑这条待办</div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}

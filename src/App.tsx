@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { HashRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { Capacitor } from '@capacitor/core';
 import { App as CapApp } from '@capacitor/app';
+import { syncReminderNotifications } from './lib/reminderNotifications';
 import TabBar from './components/TabBar';
 import Home from './pages/Home';
 import Toolbox from './pages/Toolbox';
@@ -36,7 +37,27 @@ function AppLayout() {
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
 
-    const listener = CapApp.addListener('backButton', ({ canGoBack }) => {
+    syncReminderNotifications().catch((error) => {
+      console.warn('[reminder] initial sync failed', error);
+    });
+
+    const stateListener = CapApp.addListener('appStateChange', ({ isActive }) => {
+      if (!isActive) return;
+
+      syncReminderNotifications().catch((error) => {
+        console.warn('[reminder] resume sync failed', error);
+      });
+    });
+
+    return () => {
+      stateListener.then(h => h.remove());
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+
+    const backListener = CapApp.addListener('backButton', ({ canGoBack }) => {
       const isTabPage = TAB_PATHS.includes(location.pathname);
 
       if (isTabPage) {
@@ -52,7 +73,9 @@ function AppLayout() {
       }
     });
 
-    return () => { listener.then(h => h.remove()); };
+    return () => {
+      backListener.then(h => h.remove());
+    };
   }, [location.pathname, navigate]);
 
   return (

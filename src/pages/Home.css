@@ -223,6 +223,58 @@
   color: #4b5563;
 }
 
+.todo-highlight-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.todo-highlight-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 16px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(245, 243, 255, 0.96), rgba(250, 248, 255, 0.96));
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  cursor: pointer;
+}
+
+.todo-highlight-index {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(124, 58, 237, 0.12);
+  color: #7c3aed;
+  font-size: 14px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.todo-highlight-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.todo-highlight-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.todo-highlight-meta {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
 .upcoming-list {
   display: flex;
   flex-direction: column;

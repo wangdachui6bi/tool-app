@@ -45,6 +45,44 @@
   box-shadow: var(--shadow);
 }
 
+.reminder-exact-card {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #fff7ed, #fff1f2);
+  box-shadow: var(--shadow);
+}
+
+.reminder-exact-copy {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #9a3412;
+}
+
+.reminder-exact-copy strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.reminder-exact-copy span {
+  display: block;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.reminder-exact-btn {
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #ea580c;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+}
+
 .reminder-panel {
   padding: 16px;
   margin-bottom: 16px;

@@ -159,6 +159,37 @@ export async function addTodo(item: TodoItem): Promise<void> {
   await saveServerTodos(data.items || []);
 }
 
+export async function updateTodo(id: string, text: string): Promise<void> {
+  const nextText = text.trim();
+  if (!nextText) {
+    throw new Error('待办内容不能为空');
+  }
+
+  if (!getCloudEnabled()) {
+    const list = await getStoredTodos();
+    const item = list.find((todo) => todo.id === id && !todo.deletedAt);
+    if (!item) {
+      throw new Error('待办不存在，无法更新');
+    }
+
+    item.text = nextText;
+    item.updatedAt = new Date().toISOString();
+    await saveStoredTodos(list);
+    return;
+  }
+
+  await ensureCloudImported();
+  const data = await requestTodoList(`/api/sync/todos/${encodeURIComponent(id)}`, {
+    method: 'PATCH',
+    body: JSON.stringify({
+      text: nextText,
+      sourceApp: 'tool-app',
+    }),
+  });
+
+  await saveServerTodos(data.items || []);
+}
+
 export async function toggleTodo(id: string): Promise<void> {
   if (!getCloudEnabled()) {
     const list = await getStoredTodos();

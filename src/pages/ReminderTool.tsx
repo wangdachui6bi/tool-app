@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import dayjs, { type Dayjs } from 'dayjs';
 import { Capacitor } from '@capacitor/core';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import {
-  AlarmClockPlus, ArrowLeft, BellRing, CheckCircle2,
+  AlarmClockPlus, ArrowLeft, BellRing, CheckCircle2, CircleAlert,
   Pencil, RotateCcw, Siren, Trash2,
 } from 'lucide-react';
 import {
@@ -19,6 +19,15 @@ import {
   type ReminderLevel,
   type ReminderRepeat,
 } from '../stores/reminderStore';
+import {
+  buildNotificationPayloads,
+  clearReminderNotifications,
+  createNotificationIds,
+  ensureReminderChannels,
+  getReminderNotificationStatus,
+  openExactAlarmSettings,
+  syncReminderNotifications,
+} from '../lib/reminderNotifications';
 import './ReminderTool.css';
 
 const LEVELS: { value: ReminderLevel; label: string; desc: string }[] = [
@@ -42,107 +51,6 @@ const EMPTY_FORM = () => ({
   repeat: 'none' as ReminderRepeat,
 });
 
-const WEEKDAY_REPEAT_SLOTS = [1, 2, 3, 4, 5] as const;
-const MAX_NOTIFICATION_ID = 2147483000;
-
-function makeNotificationTitle(level: ReminderLevel, title: string): string {
-  if (level === 'urgent') return `【紧急提醒】${title}`;
-  if (level === 'important') return `【重要提醒】${title}`;
-  return title;
-}
-
-function makeStableNotificationId(seed: string): number {
-  let hash = 0;
-
-  for (let index = 0; index < seed.length; index += 1) {
-    hash = (hash * 131 + seed.charCodeAt(index)) % MAX_NOTIFICATION_ID;
-  }
-
-  return hash + 1;
-}
-
-function toCapacitorWeekday(day: number): number {
-  return day === 0 ? 1 : day + 1;
-}
-
-function createNotificationIds(reminderId: string, repeat: ReminderRepeat): number[] {
-  if (repeat === 'weekdays') {
-    return WEEKDAY_REPEAT_SLOTS.map((slot) => makeStableNotificationId(`${reminderId}:weekday:${slot}`));
-  }
-
-  return [makeStableNotificationId(`${reminderId}:${repeat}`)];
-}
-
-function buildNotificationPayloads(reminder: ReminderItem) {
-  const at = dayjs(reminder.remindAt);
-  const title = makeNotificationTitle(reminder.level, reminder.title);
-  const body = reminder.note.trim() || '别忘了这件事';
-  const ids = getReminderNotificationIds(reminder);
-
-  if (reminder.repeat === 'daily') {
-    return [
-      {
-        id: ids[0],
-        title,
-        body,
-        schedule: {
-          on: {
-            hour: at.hour(),
-            minute: at.minute(),
-          },
-          repeats: true,
-        },
-      },
-    ];
-  }
-
-  if (reminder.repeat === 'weekly') {
-    return [
-      {
-        id: ids[0],
-        title,
-        body,
-        schedule: {
-          on: {
-            weekday: toCapacitorWeekday(at.day()),
-            hour: at.hour(),
-            minute: at.minute(),
-          },
-          repeats: true,
-        },
-      },
-    ];
-  }
-
-  if (reminder.repeat === 'weekdays') {
-    return WEEKDAY_REPEAT_SLOTS.map((slot, index) => ({
-      id: ids[index],
-      title,
-      body,
-      schedule: {
-        on: {
-          weekday: slot + 1,
-          hour: at.hour(),
-          minute: at.minute(),
-        },
-        repeats: true,
-      },
-    }));
-  }
-
-  return [
-    {
-      id: ids[0],
-      title,
-      body,
-      schedule: {
-        at: at.toDate(),
-        allowWhileIdle: true,
-      },
-    },
-  ];
-}
-
 function formatReminderTime(dueAt: Dayjs) {
   const now = dayjs();
 
@@ -159,17 +67,51 @@ function formatReminderTime(dueAt: Dayjs) {
 
 export default function ReminderTool() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [reminders, setReminders] = useState<ReminderItem[]>([]);
   const [form, setForm] = useState(EMPTY_FORM());
   const [editingId, setEditingId] = useState<string | null>(null);
   const [permissionText, setPermissionText] = useState('将使用本地通知提醒你');
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [saveTone, setSaveTone] = useState<'info' | 'warn' | 'success'>('info');
+  const [needsExactAlarm, setNeedsExactAlarm] = useState(false);
 
   const loadData = useCallback(async () => {
     const list = await getReminders();
     setReminders(list);
   }, []);
+
+  const clearEditState = useCallback((keepMessage = false) => {
+    setEditingId(null);
+    setForm(EMPTY_FORM());
+    if (!keepMessage) {
+      setSaveMessage(null);
+    }
+
+    if (searchParams.has('edit')) {
+      const next = new URLSearchParams(searchParams);
+      next.delete('edit');
+      setSearchParams(next, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
+
+  const openEditState = useCallback((item: ReminderItem, syncUrl = true) => {
+    setEditingId(item.id);
+    setSaveMessage(null);
+    setForm({
+      title: item.title,
+      note: item.note,
+      remindAt: dayjs(item.remindAt).format('YYYY-MM-DDTHH:mm'),
+      level: item.level,
+      repeat: item.repeat,
+    });
+
+    if (syncUrl && searchParams.get('edit') !== item.id) {
+      const next = new URLSearchParams(searchParams);
+      next.set('edit', item.id);
+      setSearchParams(next, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   useEffect(() => {
     loadData();
@@ -181,10 +123,48 @@ export default function ReminderTool() {
       return;
     }
 
-    LocalNotifications.checkPermissions().then((result) => {
-      setPermissionText(result.display === 'granted' ? '本地通知已开启' : '首次保存时会请求通知权限');
+    let active = true;
+
+    const loadNotificationState = async () => {
+      await ensureReminderChannels();
+      const status = await getReminderNotificationStatus();
+      if (!active) return;
+
+      if (!status.displayGranted) {
+        setPermissionText('首次保存时会请求通知权限');
+        setNeedsExactAlarm(false);
+        return;
+      }
+
+      if (!status.exactAlarmGranted) {
+        setPermissionText('通知已开启，但安卓未授权准时提醒，可能延后弹出');
+        setNeedsExactAlarm(true);
+        return;
+      }
+
+      setPermissionText('本地通知已开启，安卓会尽量准时强提醒');
+      setNeedsExactAlarm(false);
+    };
+
+    loadNotificationState().catch((error) => {
+      console.warn('[reminder] load notification state failed', error);
     });
+
+    return () => {
+      active = false;
+    };
   }, []);
+
+  useEffect(() => {
+    const editId = searchParams.get('edit');
+    if (!editId) return;
+
+    const target = reminders.find((item) => item.id === editId);
+    if (!target) return;
+
+    if (editingId === target.id) return;
+    openEditState(target, false);
+  }, [editingId, openEditState, reminders, searchParams]);
 
   const activeReminders = useMemo(
     () => reminders.filter((item) => !item.completed || isRepeatingReminder(item)),
@@ -218,7 +198,7 @@ export default function ReminderTool() {
     if (!Capacitor.isNativePlatform() || ids.length === 0) return;
 
     try {
-      await LocalNotifications.cancel({ notifications: ids.map((id) => ({ id })) });
+      await clearReminderNotifications(ids);
     } catch (error) {
       console.warn('[reminder] cancel notification failed', error);
     }
@@ -249,6 +229,8 @@ export default function ReminderTool() {
     let feedback = '已保存提醒';
     let tone: 'info' | 'warn' | 'success' = 'success';
 
+    await saveReminder(reminder);
+
     if (Capacitor.isNativePlatform()) {
       await cancelNativeNotifications(existing ? getReminderNotificationIds(existing) : []);
 
@@ -256,9 +238,16 @@ export default function ReminderTool() {
 
       if (granted) {
         try {
+          await ensureReminderChannels();
           await LocalNotifications.schedule({
             notifications: buildNotificationPayloads(reminder),
           });
+          await syncReminderNotifications();
+          const status = await getReminderNotificationStatus();
+          setNeedsExactAlarm(!status.exactAlarmGranted);
+          setPermissionText(status.exactAlarmGranted
+            ? '本地通知已开启，安卓会尽量准时强提醒'
+            : '通知已开启，但安卓未授权准时提醒，可能延后弹出');
           feedback = form.repeat === 'none'
             ? '已保存并会按时通知你'
             : `已保存，${getReminderRepeatLabel(form.repeat)}会继续提醒`;
@@ -276,29 +265,42 @@ export default function ReminderTool() {
       tone = 'info';
     }
 
-    await saveReminder(reminder);
     setSaveMessage(feedback);
     setSaveTone(tone);
-    setForm(EMPTY_FORM());
-    setEditingId(null);
+    clearEditState(true);
     loadData();
   };
 
+  const handleEnableExactAlarm = async () => {
+    try {
+      await openExactAlarmSettings();
+      const status = await getReminderNotificationStatus();
+      setNeedsExactAlarm(!status.exactAlarmGranted);
+      setPermissionText(status.exactAlarmGranted
+        ? '本地通知已开启，安卓会尽量准时强提醒'
+        : '通知已开启，但安卓未授权准时提醒，可能延后弹出');
+      if (status.exactAlarmGranted) {
+        await syncReminderNotifications();
+        setSaveMessage('已开启安卓准时提醒，现有提醒已重新同步');
+        setSaveTone('success');
+      }
+    } catch (error) {
+      console.warn('[reminder] change exact alarm setting failed', error);
+      setSaveMessage('没有成功打开安卓准时提醒设置');
+      setSaveTone('warn');
+    }
+  };
+
   const handleEdit = (item: ReminderItem) => {
-    setEditingId(item.id);
-    setSaveMessage(null);
-    setForm({
-      title: item.title,
-      note: item.note,
-      remindAt: dayjs(item.remindAt).format('YYYY-MM-DDTHH:mm'),
-      level: item.level,
-      repeat: item.repeat,
-    });
+    openEditState(item);
   };
 
   const handleDelete = async (item: ReminderItem) => {
     await cancelNativeNotifications(getReminderNotificationIds(item));
     await deleteReminder(item.id);
+    if (item.id === editingId) {
+      clearEditState(true);
+    }
     setSaveMessage('提醒已删除');
     setSaveTone('info');
     loadData();
@@ -385,8 +387,23 @@ export default function ReminderTool() {
             {permissionText}
           </div>
           <h1>别只是记下来，要到点提醒你</h1>
-          <p>现在支持单次、每天、每周和工作日循环提醒。即使系统通知暂时失败，提醒也会先保存在 App 里。</p>
+          <p>现在支持单次、每天、每周和工作日循环提醒。安卓端会补高优先级通知渠道和准时提醒能力，即使系统通知暂时失败，提醒也会先保存在 App 里。</p>
         </div>
+
+        {Capacitor.isNativePlatform() && needsExactAlarm && (
+          <div className="reminder-exact-card">
+            <div className="reminder-exact-copy">
+              <CircleAlert size={18} />
+              <div>
+                <strong>安卓还没打开“准时提醒”</strong>
+                <span>不开启的话，省电和待机时通知可能延后，强提醒效果会打折。</span>
+              </div>
+            </div>
+            <button className="reminder-exact-btn" onClick={handleEnableExactAlarm}>
+              去开启准时提醒
+            </button>
+          </div>
+        )}
 
         <div className="reminder-panel">
           <div className="reminder-panel-title">{editingId ? '编辑提醒' : '新建提醒'}</div>
@@ -458,9 +475,7 @@ export default function ReminderTool() {
                 <button
                   className="reminder-secondary-btn"
                   onClick={() => {
-                    setEditingId(null);
-                    setForm(EMPTY_FORM());
-                    setSaveMessage(null);
+                    clearEditState();
                   }}
                 >
                   <RotateCcw size={16} />
