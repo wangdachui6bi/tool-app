@@ -5,6 +5,9 @@ const KEY = 'todo_items';
 const CLOUD_MIGRATION_KEY = 'todo_items_cloud_migrated_v2';
 const TODO_SYNC_SERVER = import.meta.env.VITE_SYNC_SERVER_URL || import.meta.env.VITE_UPDATE_SERVER_URL || '';
 const TODO_SYNC_TOKEN = import.meta.env.VITE_TODO_SYNC_TOKEN || '';
+const FEISHU_CHECK_THROTTLE_MS = 30 * 1000;
+
+let lastFeishuCheckAt = 0;
 
 interface ServerTodoItem extends TodoItem {
   meta?: {
@@ -106,6 +109,24 @@ async function requestTodoList(path: string, init?: RequestInit): Promise<TodoLi
   return response.json() as Promise<TodoListResponse>;
 }
 
+function triggerServerFeishuCheck(reason: string) {
+  if (!getCloudEnabled()) {
+    return;
+  }
+
+  const now = Date.now();
+  if (now - lastFeishuCheckAt < FEISHU_CHECK_THROTTLE_MS) {
+    return;
+  }
+
+  lastFeishuCheckAt = now;
+  void requestTodoList('/api/sync/feishu/check', {
+    method: 'POST',
+  }).catch((error) => {
+    console.warn(`[todoStore] feishu check failed after ${reason}`, error);
+  });
+}
+
 async function ensureCloudImported(): Promise<void> {
   if (!getCloudEnabled()) return;
 
@@ -127,6 +148,7 @@ async function ensureCloudImported(): Promise<void> {
   });
 
   await saveServerTodos(data.items || []);
+  triggerServerFeishuCheck('import');
   await localforage.setItem(CLOUD_MIGRATION_KEY, true);
 }
 
@@ -154,6 +176,7 @@ export async function refreshTodos(): Promise<{ enabled: boolean; total: number;
   await ensureCloudImported();
   const data = await requestTodoList('/api/sync/todos');
   const items = await saveServerTodos(data.items || []);
+  triggerServerFeishuCheck('refresh');
 
   return {
     enabled: true,
@@ -184,6 +207,7 @@ export async function addTodo(item: TodoItem): Promise<void> {
   });
 
   await saveServerTodos(data.items || []);
+  triggerServerFeishuCheck('add');
 }
 
 export async function updateTodo(id: string, patch: Pick<TodoItem, 'text' | 'date' | 'time'>): Promise<void> {
@@ -227,6 +251,7 @@ export async function updateTodo(id: string, patch: Pick<TodoItem, 'text' | 'dat
   });
 
   await saveServerTodos(data.items || []);
+  triggerServerFeishuCheck('update');
 }
 
 export async function toggleTodo(id: string): Promise<void> {
@@ -257,6 +282,7 @@ export async function toggleTodo(id: string): Promise<void> {
   });
 
   await saveServerTodos(data.items || []);
+  triggerServerFeishuCheck('toggle');
 }
 
 export async function deleteTodo(id: string): Promise<void> {
@@ -281,6 +307,7 @@ export async function deleteTodo(id: string): Promise<void> {
   });
 
   await saveServerTodos(data.items || []);
+  triggerServerFeishuCheck('delete');
 }
 
 export async function clearCompleted(): Promise<void> {
@@ -312,4 +339,5 @@ export async function clearCompleted(): Promise<void> {
   });
 
   await saveServerTodos(data.items || []);
+  triggerServerFeishuCheck('clear-completed');
 }

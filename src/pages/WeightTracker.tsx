@@ -135,8 +135,12 @@ export default function WeightTracker() {
 
       <div className="page-content no-tab weight-tracker-content">
         {/* Person switcher */}
-        <div className="weight-person-bar card fade-in">
-          <div className="weight-person-selector" onClick={() => setShowPersonMenu(!showPersonMenu)}>
+        <div className={`weight-person-bar card fade-in ${showPersonMenu ? 'menu-open' : ''}`}>
+          <div
+            className="weight-person-selector"
+            onClick={() => setShowPersonMenu(!showPersonMenu)}
+            aria-expanded={showPersonMenu}
+          >
             <span className="weight-person-name">{activePerson}</span>
             <ChevronDown size={16} />
           </div>
